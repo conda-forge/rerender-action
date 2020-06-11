@@ -15,9 +15,19 @@ def rerender(git_repo):
     )
 
     if ret:
-        return False, True
+        changed, rerender_error = False, True
+    elif git_repo.active_branch.commit == curr_head:
+        changed, rerender_error = False, False
     else:
-        return git_repo.active_branch.commit != curr_head, False
+        subprocess.call(
+           ["git", "checkout", "HEAD~1", "--", ".github/workflows/*"],
+           cwd=git_repo.working_dir,
+        )
+        subprocess.call(
+           ["git", "commit", "--amend", "--allow-empty", "--no-edit"],
+           cwd=git_repo.working_dir,
+        )
+        changed, rerender_error = True, False
 
 
 def comment_and_push_per_changed(
