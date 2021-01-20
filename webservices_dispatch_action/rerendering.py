@@ -80,11 +80,22 @@ permissions.
                 "https://conda-forge.org/docs/maintainer/updating_pkgs.html"
                 "#rerendering-with-conda-smithy-locally"
             )
+            global_pinning_url = (
+                "https://github.com/conda-forge/conda-forge-pinning-feedstock/"
+                "blob/master/recipe/conda_build_config.yaml"
+            )
             message = """\
 Hi! This is the friendly automated conda-forge-webservice.
 I tried to rerender for you but ran into some issues, please ping conda-forge/core
 for further assistance. You can also try [re-rendering locally]({}).
-""".format(doc_url)
+
+More information on the issue may be available in the actions tab of the feedstock
+under a "rerender" workflow. The following suggestions might explain the problem:
+
+* Is the `recipe/meta.yaml` file valid?
+* If there is a `recipe/conda-build-config.yaml` file in the feedstock make sure
+  that it is compatible with the current [global pinnnings]({}).
+""".format(doc_url, global_pinning_url)
         else:
             message = """\
 Hi! This is the friendly automated conda-forge-webservice.
