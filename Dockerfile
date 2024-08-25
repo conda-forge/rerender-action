@@ -7,16 +7,17 @@ USER root
 ADD https://loripsum.net/api /opt/docker/etc/gibberish-to-bust-docker-image-cache
 
 COPY environment.yml /tmp/environment.yml
+COPY pkg_versions.json /tmp/pkg_versions.json
 
 RUN echo "**** install base env ****" && \
-    micromamba install --yes --quiet --name base -c conda-forge git conda python=3.11 && \
+    micromamba install --yes --quiet --name base -c conda-forge git conda python=3.11 jq && \
     source /opt/conda/etc/profile.d/conda.sh && \
     conda activate base && \
-    micromamba install --yes --quiet --name base --file /tmp/environment.yml && \
     touch ${CONDA_PREFIX}/conda-meta/pinned && \
-    echo "conda-forge-tick =="$(conda list conda-forge-tick | grep conda-forge-tick | awk '{print $2}') \
+    echo "conda-forge-tick =="$(cat pkg_versions.json | jq -r '.["conda-forge-tick"] // "*"') \
       >> ${CONDA_PREFIX}/conda-meta/pinned && \
-    cat ${CONDA_PREFIX}/conda-meta/pinned
+    cat ${CONDA_PREFIX}/conda-meta/pinned && \
+    micromamba install --yes --quiet --name base --file /tmp/environment.yml
 
 RUN echo "**** cleanup ****" && \
     micromamba clean --all --force-pkgs-dirs --yes && \
