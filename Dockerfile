@@ -13,11 +13,11 @@ RUN echo "**** install base env ****" && \
     micromamba install --yes --quiet --name base -c conda-forge git conda python=3.11 jq && \
     source /opt/conda/etc/profile.d/conda.sh && \
     conda activate base && \
-    micromamba install --yes --quiet --name base --file /tmp/environment.yml && \
     touch ${CONDA_PREFIX}/conda-meta/pinned && \
     echo "conda-forge-tick =="$(cat pkg_versions.json | jq -r '.["conda-forge-tick"] // "*"') \
       >> ${CONDA_PREFIX}/conda-meta/pinned && \
-    cat ${CONDA_PREFIX}/conda-meta/pinned
+    cat ${CONDA_PREFIX}/conda-meta/pinned && \
+    micromamba install --yes --quiet --name base --file /tmp/environment.yml
 
 RUN echo "**** cleanup ****" && \
     micromamba clean --all --force-pkgs-dirs --yes && \
