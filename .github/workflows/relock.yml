@@ -1,0 +1,33 @@
+name: relock
+
+on:
+  workflow_dispatch: null
+  schedule:
+    - cron: '*/30 * * * *'
+
+concurrency: relock
+
+jobs:
+  relock:
+    name: relock
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+
+      - name: generate token
+        id: generate_token
+        uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4 # v1
+        with:
+          app-id: ${{ secrets.CF_CURATOR_APP_ID }}
+          private-key: ${{ secrets.CF_CURATOR_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - uses: beckermr/relock-conda@d074c61772433fd2afb2f873353c751168a7bf55 # v3
+        with:
+          github-token: ${{ steps.generate_token.outputs.token }}
+          automerge: true
+          skip-if-pr-exists: true
+          include-only-packages: |
+            conda-smithy
+            conda-forge-tick
+            conda-build
