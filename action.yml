@@ -42,7 +42,7 @@ runs:
         fi
 
         echo "::group::docker image pull"
-        docker pull ${ CF_FEEDSTOCK_OPS_CONTAINER_NAME}:${ CF_FEEDSTOCK_OPS_CONTAINER_TAG}
+        docker pull ${CF_FEEDSTOCK_OPS_CONTAINER_NAME}:${CF_FEEDSTOCK_OPS_CONTAINER_TAG}
         echo "::endgroup::"
 
         git config --global user.name "conda-forge-webservices[bot]"
