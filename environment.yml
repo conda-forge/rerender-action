@@ -17,5 +17,6 @@ dependencies:
   - requests
   - gitpython
   - pyyaml
+  - pytest
   - pip:
       - git+https://github.com/regro/conda-forge-feedstock-ops.git@0.1.0

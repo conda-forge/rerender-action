@@ -16,6 +16,10 @@ jobs:
   tests:
     name: tests
     runs-on: "ubuntu-latest"
+    defaults:
+      run:
+        shell: bash -leo pipefail {0}
+
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
 
@@ -30,14 +34,10 @@ jobs:
               - conda-forge
 
       - name: configure conda and install code
-        shell: bash -l {0}
         run: |
-          micromamba info -a
-          micromamba install --yes pytest
           pip install --no-deps -e .
 
       - name: run tests
-        shell: bash -l {0}
         run: |
           pytest -vv webservices_dispatch_action
           command -v run-webservices-dispatch-action
@@ -52,7 +52,6 @@ jobs:
 
       - name: run live rerender tests
         if: github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
-        shell: bash -l {0}
         run: |
           echo "${DH_PASSWORD}" | docker login -u condaforgebot --password-stdin
           git config --global user.name "conda-forge-admin"
@@ -70,7 +69,6 @@ jobs:
 
       # - name: run live version update tests
       #   if: github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
-      #   shell: bash -l {0}
       #   run: |
       #     echo "${DH_PASSWORD}" | docker login -u condaforgebot --password-stdin
       #     git config --global user.name "conda-forge-admin"
@@ -83,7 +81,6 @@ jobs:
 
       # - name: run live version update tests w/ user version
       #   if: github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
-      #   shell: bash -l {0}
       #   run: |
       #     echo "${DH_PASSWORD}" | docker login -u condaforgebot --password-stdin
       #     git config --global user.name "conda-forge-admin"
