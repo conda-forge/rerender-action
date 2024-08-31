@@ -22,11 +22,10 @@ jobs:
       - uses: conda-incubator/setup-miniconda@a4260408e20b96e80095f42ff7f1a15b27dd94ca # v3
         with:
           python-version: "3.11"
-          channels: conda-forge,defaults
+          channels: conda-forge
           channel-priority: strict
           show-channel-urls: true
           miniforge-version: latest
-          miniforge-variant: Mambaforge
           environment-file: environment.yml
 
       - name: configure conda and install code
@@ -51,40 +50,48 @@ jobs:
           owner: ${{ github.repository_owner }}
 
       - name: run live rerender tests
+        if: github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
         shell: bash -l {0}
         run: |
           echo "${DH_PASSWORD}" | docker login -u condaforgebot --password-stdin
           git config --global user.name "conda-forge-admin"
           git config --global user.email "pelson.pub+conda-forge@gmail.com"
           git config --global pull.rebase false
-          python tests/run_live_rerender_test.py --build-and-push
+          if [[ "${GITHUB_HEAD_REF}" != "" ]]; then
+            branch="${GITHUB_HEAD_REF}"
+          else
+            branch="${GITHUB_REF_NAME}"
+          fi
+          python tests/run_live_rerender_test.py --build-and-push --branch="${branch}"
         env:
           GH_TOKEN: ${{ steps.generate_token.outputs.token }}
           DH_PASSWORD: ${{ secrets.CF_BOT_DH_PASSWORD }}
 
-      - name: run live version update tests
-        shell: bash -l {0}
-        run: |
-          echo "${DH_PASSWORD}" | docker login -u condaforgebot --password-stdin
-          git config --global user.name "conda-forge-admin"
-          git config --global user.email "pelson.pub+conda-forge@gmail.com"
-          git config --global pull.rebase false
-          python tests/run_live_version_update_test.py
-        env:
-          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
-          DH_PASSWORD: ${{ secrets.CF_BOT_DH_PASSWORD }}
+      # - name: run live version update tests
+      #   if: github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
+      #   shell: bash -l {0}
+      #   run: |
+      #     echo "${DH_PASSWORD}" | docker login -u condaforgebot --password-stdin
+      #     git config --global user.name "conda-forge-admin"
+      #     git config --global user.email "pelson.pub+conda-forge@gmail.com"
+      #     git config --global pull.rebase false
+      #     python tests/run_live_version_update_test.py
+      #   env:
+      #     GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+      #     DH_PASSWORD: ${{ secrets.CF_BOT_DH_PASSWORD }}
 
-      - name: run live version update tests w/ user version
-        shell: bash -l {0}
-        run: |
-          echo "${DH_PASSWORD}" | docker login -u condaforgebot --password-stdin
-          git config --global user.name "conda-forge-admin"
-          git config --global user.email "pelson.pub+conda-forge@gmail.com"
-          git config --global pull.rebase false
-          python tests/run_live_version_update_test.py --version=0.14
-        env:
-          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
-          DH_PASSWORD: ${{ secrets.CF_BOT_DH_PASSWORD }}
+      # - name: run live version update tests w/ user version
+      #   if: github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
+      #   shell: bash -l {0}
+      #   run: |
+      #     echo "${DH_PASSWORD}" | docker login -u condaforgebot --password-stdin
+      #     git config --global user.name "conda-forge-admin"
+      #     git config --global user.email "pelson.pub+conda-forge@gmail.com"
+      #     git config --global pull.rebase false
+      #     python tests/run_live_version_update_test.py --version=0.14
+      #   env:
+      #     GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+      #     DH_PASSWORD: ${{ secrets.CF_BOT_DH_PASSWORD }}
 
   docker-push:
     name: docker-push

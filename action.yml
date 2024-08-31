@@ -10,8 +10,35 @@ inputs:
     required: false
     default: ''
 runs:
-  using: 'docker'
-  image: 'docker://condaforge/webservices-dispatch-action:prod'
-  args:
-    - ${{ inputs.github_token }}
-    - ${{ inputs.rerendering_github_token }}
+  using: 'composite'
+  steps:
+    - name: setup conda
+      uses: mamba-org/setup-micromamba@f8b8a1e23a26f60a44c853292711bacfd3eac822 # v1
+      with:
+        environment-file: ${{ github.action_path }}/conda-lock.yml
+        condarc: |
+          show_channel_urls: true
+          channel_priority: strict
+          channels:
+            - conda-forge
+
+    - name: install code
+      shell: bash -leo pipefail {0}
+      run: |
+        pip install --no-build-isolation --no-deps -e .
+
+    - name: run
+      shell: bash -leo pipefail {0}
+      run: |
+        if [[ "${GHA_REF}" == "main" ]]; then
+          export CF_FEEDSTOCK_OPS_CONTAINER_TAG="prod"
+        else
+          export CF_FEEDSTOCK_OPS_CONTAINER_TAG="dev"
+        fi
+
+        run-webservices-dispatch-action
+      env:
+        CF_FEEDSTOCK_OPS_CONTAINER_NAME: condaforge/webservices-dispatch-action
+        INPUT_GITHUB_TOKEN: ${{ inputs.github_token }}
+        INPUT_RERENDERING_GITHUB_TOKEN: ${{ inputs.rerendering_github_token }}
+        GHA_REF: ${{ github.action_ref }}

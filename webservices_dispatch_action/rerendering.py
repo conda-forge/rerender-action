@@ -2,7 +2,9 @@ import logging
 import os
 import subprocess
 
+import conda_forge_feedstock_ops.rerender.rerender as cf_feedstock_ops_rerender
 import yaml
+from conda_forge_feedstock_ops.container_utils import ContainerRuntimeError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -15,11 +17,27 @@ def rerender(git_repo, can_change_workflows):
     ensure_output_validation_is_on(git_repo)
 
     curr_head = git_repo.active_branch.commit
-    ret = subprocess.call(
-        ["conda", "smithy", "rerender", "-c", "auto", "--no-check-uptodate"],
-        cwd=git_repo.working_dir,
-        env=os.environ,
-    )
+
+    try:
+        msg = cf_feedstock_ops_rerender(
+            git_repo.working_dir,
+            timeout=None,
+            use_container=True,
+        )
+    except ContainerRuntimeError as e:
+        LOGGER.error(f"Rerendering failed: {e}")
+        ret = 1
+    else:
+        ret = 0
+        if msg is not None:
+            subprocess.call(
+                ["git", "add", "."],
+                cwd=git_repo.working_dir,
+            )
+            subprocess.call(
+                ["git", "commit", "--all", "-m", msg],
+                cwd=git_repo.working_dir,
+            )
 
     if ret:
         changed, rerender_error = False, True

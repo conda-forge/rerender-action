@@ -1,32 +1,10 @@
-#!/usr/bin/env sh
+#!/bin/bash
 
-echo " "
-echo "==================================================================================================="
-echo "==================================================================================================="
+# source profile scripts for conda
+source ~/.bash_profile
 
-source /opt/conda/etc/profile.d/conda.sh
+# activate env
+conda activate $CF_FEEDSTOCK_OPS_ENV
 
-git config --global user.name "conda-forge-webservices[bot]"
-git config --global user.email "91080706+conda-forge-webservices[bot]@users.noreply.github.com"
-
-conda activate base
-conda config --set show_channel_urls True
-conda config --add channels conda-forge
-conda config --remove channels defaults || true
-conda config --set channel_priority strict
-conda config --set always_yes yes
-
-conda config --show-sources
-
-conda update --all --yes
-
-conda info
-conda list
-
-echo " "
-echo "==================================================================================================="
-echo "==================================================================================================="
-
-export CF_TICK_IN_CONTAINER=true
-
-run-webservices-dispatch-action
+# Run whatever the user wants.
+exec "$@"
