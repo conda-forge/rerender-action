@@ -10,8 +10,51 @@ inputs:
     required: false
     default: ''
 runs:
-  using: 'docker'
-  image: 'docker://condaforge/webservices-dispatch-action:prod'
-  args:
-    - ${{ inputs.github_token }}
-    - ${{ inputs.rerendering_github_token }}
+  using: 'composite'
+  steps:
+    - name: setup conda
+      uses: mamba-org/setup-micromamba@f8b8a1e23a26f60a44c853292711bacfd3eac822 # v1
+      with:
+        environment-file: ${{ github.action_path }}/conda-lock.yml
+        environment-name: webservices
+        condarc: |
+          show_channel_urls: true
+          channel_priority: strict
+          channels:
+            - conda-forge
+
+    - name: install code
+      shell: bash -leo pipefail {0}
+      run: |
+        echo "::group::install code"
+        pushd ${{ github.action_path }}
+        pip install --no-build-isolation --no-deps -e .
+        popd
+        echo "::endgroup::"
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+
+    - name: run
+      shell: bash -leo pipefail {0}
+      run: |
+        if [[ "${GHA_REF}" == "main" ]]; then
+          export CF_FEEDSTOCK_OPS_CONTAINER_TAG="prod"
+        else
+          export CF_FEEDSTOCK_OPS_CONTAINER_TAG="dev"
+        fi
+
+        echo "::group::docker image pull"
+        docker pull ${CF_FEEDSTOCK_OPS_CONTAINER_NAME}:${CF_FEEDSTOCK_OPS_CONTAINER_TAG}
+        echo "::endgroup::"
+
+        git config --global user.name "conda-forge-webservices[bot]"
+        git config --global user.email "91080706+conda-forge-webservices[bot]@users.noreply.github.com"
+
+        export CF_TICK_IN_CONTAINER=true
+
+        run-webservices-dispatch-action
+      env:
+        CF_FEEDSTOCK_OPS_CONTAINER_NAME: condaforge/webservices-dispatch-action
+        INPUT_GITHUB_TOKEN: ${{ inputs.github_token }}
+        INPUT_RERENDERING_GITHUB_TOKEN: ${{ inputs.rerendering_github_token }}
+        GHA_REF: ${{ github.action_ref }}

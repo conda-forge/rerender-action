@@ -171,6 +171,11 @@ parser = argparse.ArgumentParser(
     description="Run a live test of the rerendering code",
 )
 parser.add_argument(
+    "--branch",
+    help="the webservices-dispatch-action branch to use for the rerendering test",
+    required=True,
+)
+parser.add_argument(
     "--build-and-push",
     help="build and push the docker image to the dev tag before running the tests",
     action="store_true",
@@ -204,7 +209,7 @@ with tempfile.TemporaryDirectory() as tmpdir:
 
         with pushd("cf-autotick-bot-test-package-feedstock"):
             try:
-                _change_action_branch("dev")
+                _change_action_branch(args.branch)
 
                 print("checkout branch...")
                 subprocess.run(

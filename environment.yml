@@ -1,17 +1,22 @@
-name: base
+name: webservices
 channels:
-- conda-forge
+  - conda-forge
+platforms:
+  - linux-64
 dependencies:
- - git
- - conda-smithy>=3.22.0
- - conda-forge-tick
- - conda-forge-pinning
- - conda-build
- - pip
- - setuptools
- - setuptools_scm
- - tini
- - pygithub
- - requests
- - gitpython
- - pyyaml
+  - python =3.11
+  - git
+  - conda-smithy >=3.22.0
+  - conda-forge-tick
+  - conda-build
+  - pip
+  - setuptools
+  - setuptools_scm
+  - tini
+  - pygithub
+  - requests
+  - gitpython
+  - pyyaml
+  - pytest
+  - pip:
+      - git+https://github.com/regro/conda-forge-feedstock-ops.git@0.1.0

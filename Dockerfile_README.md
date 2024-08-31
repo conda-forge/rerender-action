@@ -10,9 +10,7 @@ to new versions.
 
 ## License
 
-This image is licensed under [BSD-3 Clause](https://github.com/conda-forge/webservices-dispatch-action/blob/main/LICENSE)
-and is based on a base image under the [MIT](https://github.com/conda-forge/webservices-dispatch-action/blob/main/BASE_IMAGE_LICENSE)
-license.
+This image is licensed under [BSD-3 Clause](https://github.com/conda-forge/webservices-dispatch-action/blob/main/LICENSE).
 
 ## Documentation & Contributing
 
@@ -28,8 +26,8 @@ upstream [repo](https://github.com/conda-forge/webservices-dispatch-action/compa
 
 ## Important Image Tags
 
- - prod: the current production image in use for feedstocks
- - dev: a tag that is overwritten and used for CI testing
+- prod: the current production image in use for feedstocks
+- dev: a tag that is overwritten and used for CI testing
 
 ## Getting Started & Usage
 
