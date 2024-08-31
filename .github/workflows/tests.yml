@@ -19,20 +19,21 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
 
-      - uses: conda-incubator/setup-miniconda@a4260408e20b96e80095f42ff7f1a15b27dd94ca # v3
+      - uses: mamba-org/setup-micromamba@f8b8a1e23a26f60a44c853292711bacfd3eac822 # v1
         with:
-          python-version: "3.11"
-          channels: conda-forge
-          channel-priority: strict
-          show-channel-urls: true
-          miniforge-version: latest
-          environment-file: environment.yml
+          environment-file: conda-lock.yml
+          environment-name: webservices
+          condarc: |
+            show_channel_urls: true
+            channel_priority: strict
+            channels:
+              - conda-forge
 
       - name: configure conda and install code
         shell: bash -l {0}
         run: |
-          conda info -a
-          mamba install --yes pytest
+          micromamba info -a
+          micromamba install --yes pytest
           pip install --no-deps -e .
 
       - name: run tests

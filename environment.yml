@@ -4,6 +4,7 @@ channels:
 platforms:
   - linux-64
 dependencies:
+  - python =3.11
   - git
   - conda-smithy >=3.22.0
   - conda-forge-tick
