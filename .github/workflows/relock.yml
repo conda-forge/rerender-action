@@ -28,6 +28,10 @@ jobs:
           automerge: true
           skip-if-pr-exists: true
           include-only-packages: |
+            anaconda-client
             conda-smithy
-            conda-forge-tick
+            conda
             conda-build
+            conda-libmamba-solver
+            mamba
+            conda-forge-tick
