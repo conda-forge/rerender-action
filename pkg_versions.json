@@ -4,7 +4,7 @@
   "conda": "24.7.1",
   "conda-build": "24.7.1",
   "conda-libmamba-solver": "24.7.0",
-  "mamba": "1.5.8",
+  "mamba": "1.5.9",
   "conda-forge-tick": "2024.8.30",
-  "conda-forge-webservices-update-timestamp": "2024-08-25T13:06:13.596265+00:00"
+  "conda-forge-webservices-update-timestamp": "2024-08-31T02:19:52.511136+00:00"
 }
