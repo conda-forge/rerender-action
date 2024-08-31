@@ -2,9 +2,9 @@ import logging
 import os
 import subprocess
 
-import conda_forge_feedstock_ops.rerender.rerender as cf_feedstock_ops_rerender
 import yaml
 from conda_forge_feedstock_ops.container_utils import ContainerRuntimeError
+from conda_forge_feedstock_ops.rerender import rerender as cf_feedstock_ops_rerender
 
 LOGGER = logging.getLogger(__name__)
 
