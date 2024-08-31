@@ -5,6 +5,7 @@ on:
     branches:
       - main
   pull_request: null
+  merge_group: null
 
 concurrency:
   group: ${{ github.workflow }}
