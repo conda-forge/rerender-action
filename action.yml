@@ -26,9 +26,11 @@ runs:
     - name: install code
       shell: bash -leo pipefail {0}
       run: |
+        echo "::group::install code"
         pushd ${{ github.action_path }}
         pip install --no-build-isolation --no-deps -e .
         popd
+        echo "::endgroup::"
       env:
         ACTION_PATH: ${{ github.action_path }}
 

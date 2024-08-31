@@ -71,7 +71,8 @@ jobs:
           push: true
           tags: condaforge/webservices-dispatch-action:dev
 
-      - name: run live rerender tests
+      - name: setup live tests
+        id: live_tests
         if: github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
         run: |
           git config --global user.name "conda-forge-admin"
@@ -82,32 +83,28 @@ jobs:
           else
             branch="${GITHUB_REF_NAME}"
           fi
-          python tests/run_live_rerender_test.py --branch="${branch}"
+          echo "branch=${branch}" >> "$GITHUB_OUTPUT"
+
+      - name: run live rerender tests
+        if: github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
+        run: |
+          python tests/run_live_rerender_test.py --branch=${{ steps.live_tests.outputs.branch }}
         env:
           GH_TOKEN: ${{ steps.generate_token.outputs.token }}
-          DH_PASSWORD: ${{ secrets.CF_BOT_DH_PASSWORD }}
 
-      # - name: run live version update tests
-      #   if: github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
-      #   run: |
-      #     git config --global user.name "conda-forge-admin"
-      #     git config --global user.email "pelson.pub+conda-forge@gmail.com"
-      #     git config --global pull.rebase false
-      #     python tests/run_live_version_update_test.py
-      #   env:
-      #     GH_TOKEN: ${{ steps.generate_token.outputs.token }}
-      #     DH_PASSWORD: ${{ secrets.CF_BOT_DH_PASSWORD }}
+      - name: run live version update tests
+        if: github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
+        run: |
+          python tests/run_live_version_update_test.py --branch=${{ steps.live_tests.outputs.branch }}
+        env:
+          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
 
-      # - name: run live version update tests w/ user version
-      #   if: github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
-      #   run: |
-      #     git config --global user.name "conda-forge-admin"
-      #     git config --global user.email "pelson.pub+conda-forge@gmail.com"
-      #     git config --global pull.rebase false
-      #     python tests/run_live_version_update_test.py --version=0.14
-      #   env:
-      #     GH_TOKEN: ${{ steps.generate_token.outputs.token }}
-      #     DH_PASSWORD: ${{ secrets.CF_BOT_DH_PASSWORD }}
+      - name: run live version update tests w/ user version
+        if: github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
+        run: |
+          python tests/run_live_version_update_test.py --version=0.14 --branch=${{ steps.live_tests.outputs.branch }}
+        env:
+          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
 
   docker-push:
     name: push docker image
