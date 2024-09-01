@@ -1,0 +1,21 @@
+name: keep-alive
+on:
+  schedule:
+    - cron: "0 6 * * SUN" # Once weekly on Sunday @ 0600 UTC
+
+permissions:
+  contents: write
+
+jobs:
+  keep-alive:
+    name: Alive
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: gautamkrishnar/keepalive-workflow@24ba73b43d5ea8d2b3d56fb9b8de951ba9a3dd18 # 2.0.6
+        with:
+          commit_message: "Ah ah ah, stayin' alive"
+          committer_username: conda-forge-bot
+          committer_email: "conda-forge-bot@users.noreply.github.com"
+          time_elapsed: 50 # days
+          use_api: false

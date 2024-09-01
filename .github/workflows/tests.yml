@@ -138,15 +138,3 @@ jobs:
           provider: dockerhub
           short_description: "conda-forge image used to power the admin webservices GitHub Actions integrations"
           readme_file: "Dockerfile_README.md"
-
-  keepalive-job:
-    name: keep alive
-    runs-on: ubuntu-latest
-    if: github.event_name == 'schedule'
-    permissions:
-      actions: write
-    steps:
-      - name: checkout code
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
-      - name: keep alive
-        uses: gautamkrishnar/keepalive-workflow@24ba73b43d5ea8d2b3d56fb9b8de951ba9a3dd18 # 2.0.6
