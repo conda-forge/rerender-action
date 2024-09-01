@@ -22,7 +22,7 @@ jobs:
           private-key: ${{ secrets.CF_CURATOR_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
 
-      - uses: beckermr/relock-conda@d074c61772433fd2afb2f873353c751168a7bf55 # v3
+      - uses: beckermr/relock-conda@9629d89cb692ee9b3617a335813d4550ab843bee # v4
         with:
           github-token: ${{ steps.generate_token.outputs.token }}
           automerge: true
