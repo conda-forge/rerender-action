@@ -9,6 +9,7 @@ dependencies:
   - conda-smithy >=3.22.0
   - conda-forge-tick
   - conda-build
+  - conda-forge-feedstock-ops >=0.3.0
   - pip
   - setuptools
   - setuptools_scm
@@ -18,5 +19,3 @@ dependencies:
   - gitpython
   - pyyaml
   - pytest
-  - pip:
-      - git+https://github.com/regro/conda-forge-feedstock-ops.git@0.1.0
