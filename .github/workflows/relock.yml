@@ -37,3 +37,4 @@ jobs:
             conda-libmamba-solver
             mamba
             conda-forge-tick
+            conda-forge-feedstock-ops
