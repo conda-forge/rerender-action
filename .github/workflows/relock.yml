@@ -12,17 +12,19 @@ jobs:
     name: relock
     runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+      - name: checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
       - name: generate token
         id: generate_token
-        uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4 # v1
+        uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4
         with:
           app-id: ${{ secrets.CF_CURATOR_APP_ID }}
           private-key: ${{ secrets.CF_CURATOR_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
 
-      - uses: beckermr/relock-conda@9629d89cb692ee9b3617a335813d4550ab843bee # v4
+      - name: relock
+        uses: beckermr/relock-conda@37dda99dfc45d796d0b2526761856b10ff257d32
         with:
           github-token: ${{ steps.generate_token.outputs.token }}
           automerge: true
