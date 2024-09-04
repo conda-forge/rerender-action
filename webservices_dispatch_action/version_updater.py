@@ -33,7 +33,7 @@ def update_version(git_repo, repo_name, input_version=None):
 
     try:
         LOGGER.info("computing feedstock attributes")
-        attrs = load_feedstock(name, {})
+        attrs = load_feedstock(name, {}, use_container=True)
         LOGGER.info("feedstock attrs:\n%s\n", pprint.pformat(attrs))
     except Exception:
         LOGGER.exception("error while computing feedstock attributes!")
@@ -55,6 +55,7 @@ def update_version(git_repo, repo_name, input_version=None):
                     IncrementAlphaRawURL(),
                     NVIDIA(),
                 ),
+                use_container=True,
             )
             new_version = new_version["new_version"]
             if new_version:
@@ -95,6 +96,8 @@ def update_version(git_repo, repo_name, input_version=None):
         if errors or new_meta_yaml is None:
             LOGGER.critical("errors when updating the recipe: %r", errors)
             raise RuntimeError("Error updating the recipe!")
+        # this operation does not need a container since it runs regex on the
+        # recipe as a string
         new_meta_yaml = conda_forge_tick.update_recipe.update_build_number(
             new_meta_yaml,
             0,
