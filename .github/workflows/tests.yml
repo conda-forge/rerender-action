@@ -1,6 +1,7 @@
 name: tests
 
 on:
+  workflow_dispatch: null
   pull_request: null
   merge_group: null
 
