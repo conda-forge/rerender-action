@@ -8,6 +8,7 @@ import click
 import conda_forge_tick.update_recipe
 from conda.models.version import VersionOrder
 from conda_forge_tick.feedstock_parser import load_feedstock
+from conda_forge_tick.update_recipe.version import update_version_feedstock_dir
 from conda_forge_tick.update_sources import (
     CRAN,
     NPM,
@@ -89,19 +90,25 @@ def update_version(git_repo, repo_name, input_version=None):
         return False, False
 
     try:
-        new_meta_yaml, errors = conda_forge_tick.update_recipe.update_version(
-            attrs["raw_meta_yaml"],
+        updated, errors = update_version_feedstock_dir(
+            git_repo.working_dir,
             str(new_version),
+            use_container=True,
         )
-        if errors or new_meta_yaml is None:
+        if errors or (not updated):
             LOGGER.critical("errors when updating the recipe: %r", errors)
             raise RuntimeError("Error updating the recipe!")
-        # this operation does not need a container since it runs regex on the
-        # recipe as a string
+
+        # no container used here since this is a pure text-based operation
+        # with a regex
+        with open(os.path.join(git_repo.working_dir, "recipe", "meta.yaml")) as fp:
+            new_meta_yaml = fp.read()
         new_meta_yaml = conda_forge_tick.update_recipe.update_build_number(
             new_meta_yaml,
             0,
         )
+        with open(os.path.join(git_repo.working_dir, "recipe", "meta.yaml"), "w") as fp:
+            fp.write(new_meta_yaml)
     except Exception:
         LOGGER.exception("error while updating the recipe!")
         return False, True
