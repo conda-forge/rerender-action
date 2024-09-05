@@ -2,6 +2,9 @@ name: tests
 
 on:
   workflow_dispatch: null
+  push:
+    branches:
+      - main
   pull_request: null
   merge_group: null
 
