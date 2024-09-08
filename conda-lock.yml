@@ -222,15 +222,15 @@ package:
       python-dateutil: '>=2.1,<3.0.0'
       urllib3: '>=1.25.4,!=2.2.0,<3'
     hash:
-      md5: aa3e620e164f71e95a0ceab54cb3f2fa
-      sha256: dfc3020bea777c2ccdf0dac2aa99a9de0efc9629f94b6adfebd7fbdac2f4e418
+      md5: 2304ce28e93af9f535194303eea61af1
+      sha256: b6f258180a02dc2a89ff2106a5d8c705322c35422c2611d1436427ccc117cac4
     manager: conda
     name: botocore
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/noarch/botocore-1.35.13-pyge310_1234567_0.conda
-    version: 1.35.13
+      https://conda.anaconda.org/conda-forge/noarch/botocore-1.35.14-pyge310_1234567_0.conda
+    version: 1.35.14
   - category: main
     dependencies:
       __glibc: '>=2.17,<3.0.a0'
@@ -612,32 +612,23 @@ package:
     version: 0.7.4
   - category: main
     dependencies:
-      boltons: '>=23.0.0'
       click: ''
-      conda: ''
-      conda-build: ''
-      conda-forge-metadata: '>=0.2.0'
-      conda-package-handling: ''
+      conda-build: '>=3.27'
       conda-smithy: ''
-      libmambapy: '>=1.5.1,<2.0a0'
-      py-rattler: '>=0.6.2,<0.7a0'
       python: '>=3.11'
       python-rapidjson: ''
-      requests: ''
-      ruamel.yaml: ''
-      ruamel.yaml.jinja2: ''
-      wurlitzer: ''
-      zstandard: ''
+      pyyaml: ''
+      rattler-build-conda-compat: '>=0.0.2,<2.0.0a0'
     hash:
-      md5: 291dc70adff6dd7df84ac2ec0f60f6be
-      sha256: a26d8db940eb581750f39e1c388838be228cc3a4c434d5bc54fff611fa6b1b5c
+      md5: 001174aa77ca64a515cb40e439c419b6
+      sha256: 50e75736cea4ba671d3396bf563fb9bbedfb59f409c47d6d29651bd74e97b8f8
     manager: conda
     name: conda-forge-feedstock-ops
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/noarch/conda-forge-feedstock-ops-0.3.0-pyhd8ed1ab_1.conda
-    version: 0.3.0
+      https://conda.anaconda.org/conda-forge/noarch/conda-forge-feedstock-ops-0.5.0-pyhd8ed1ab_0.conda
+    version: 0.5.0
   - category: main
     dependencies:
       beautifulsoup4: ''
@@ -649,27 +640,27 @@ package:
       ruamel.yaml: ''
       typing-extensions: ''
     hash:
-      md5: 9362eff1ba190d5020300d662733b315
-      sha256: 3c29c8ffd3eb0824bf084425529c7d4d0e96182330e5937717e7414030a54ec8
+      md5: d99d6b73a133a366b0d948cf5147fd10
+      sha256: b9cf1a62af3542fb32d8b5dc30d501070a706d1aa9ee890322bae9c2d399d05e
     manager: conda
     name: conda-forge-metadata
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/noarch/conda-forge-metadata-0.8.1-pyhd8ed1ab_0.conda
+      https://conda.anaconda.org/conda-forge/noarch/conda-forge-metadata-0.8.1-pyhd8ed1ab_1.conda
     version: 0.8.1
   - category: main
     dependencies: {}
     hash:
-      md5: 77317ebda0d8df4660a8c5330a64809e
-      sha256: 109db38540de683d17099636a81b4a88b075e3ebcedba93aa8cc88c7c7274141
+      md5: 6cad8ce4faf2b1dc69875300eb01b11e
+      sha256: bd14dd193560caba129e60ffa61866bcceca3be85ae57c3c4a041e83ed629f1a
     manager: conda
     name: conda-forge-pinning
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/noarch/conda-forge-pinning-2024.09.06.13.38.35-hd8ed1ab_0.conda
-    version: 2024.09.06.13.38.35
+      https://conda.anaconda.org/conda-forge/noarch/conda-forge-pinning-2024.09.07.19.33.02-hd8ed1ab_0.conda
+    version: 2024.09.07.19.33.02
   - category: main
     dependencies:
       attrs: ''
@@ -725,15 +716,15 @@ package:
       wurlitzer: ''
       yaml: ''
     hash:
-      md5: ed7875137425e76e5a8af5aee9534cc9
-      sha256: 5d8a12da28b9f937fd730936c3c00f14902113c4e48ac2d169980f777876095b
+      md5: 4d2cf5f20eae3489c5a2f9510dfa6559
+      sha256: fdbc07ca6c2c46c5276fe6a78dc42a8d6d3ecbfabbb12c39da82ff293d24e10a
     manager: conda
     name: conda-forge-tick
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/noarch/conda-forge-tick-2024.9.28-pyhd8ed1ab_0.conda
-    version: 2024.9.28
+      https://conda.anaconda.org/conda-forge/noarch/conda-forge-tick-2024.9.29-pyhd8ed1ab_0.conda
+    version: 2024.9.29
   - category: main
     dependencies:
       click: '>=8'
@@ -1032,14 +1023,14 @@ package:
       pyyaml: ''
       requests: ''
     hash:
-      md5: a3efdde00a8d1c9e91295994d94b5aca
-      sha256: 1995baaa3b78236360cc083ab164b850f05620f10e6de31eed694e40de282998
+      md5: 33b11ea6f5126d769f6d2686b31ae62a
+      sha256: 047e2a22a54fb9d1b233ff49203bfb01043a272903077e8d8034556998b1f145
     manager: conda
     name: depfinder
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/linux-64/depfinder-2.10.0-py311h38be061_1.conda
+      https://conda.anaconda.org/conda-forge/linux-64/depfinder-2.10.0-py311h38be061_2.conda
     version: 2.10.0
   - category: main
     dependencies:
@@ -1196,14 +1187,14 @@ package:
     dependencies:
       python: '>=3.7'
     hash:
-      md5: 0e7e4388e9d5283e22b35a9443bdbcc9
-      sha256: f78d9c0be189a77cb0c67d02f33005f71b89037a85531996583fb79ff3fe1a0a
+      md5: ec288789b07ae3be555046e099798a56
+      sha256: f55c9af3d92a363fa9e4f164038db85a028befb65d56df0b2cb34911eba8a37a
     manager: conda
     name: filelock
     optional: false
     platform: linux-64
-    url: https://conda.anaconda.org/conda-forge/noarch/filelock-3.15.4-pyhd8ed1ab_0.conda
-    version: 3.15.4
+    url: https://conda.anaconda.org/conda-forge/noarch/filelock-3.16.0-pyhd8ed1ab_0.conda
+    version: 3.16.0
   - category: main
     dependencies:
       libgcc-ng: '>=12'
@@ -2584,17 +2575,17 @@ package:
     version: 2.58.3
   - category: main
     dependencies:
-      libgcc-ng: '>=7.5.0'
+      libgcc-ng: '>=12'
     hash:
-      md5: c3788462a6fbddafdb413a9f9053e58d
-      sha256: 53da0c8b79659df7b53eebdb80783503ce72fb4b10ed6e9e05cc0e9e4207a130
+      md5: a587892d3c13b6621a6091be690dbca2
+      sha256: 0105bd108f19ea8e6a78d2d994a6d4a8db16d19a41212070d2d1d48a63c34161
     manager: conda
     name: libsodium
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/linux-64/libsodium-1.0.18-h36c2ea0_1.tar.bz2
-    version: 1.0.18
+      https://conda.anaconda.org/conda-forge/linux-64/libsodium-1.0.20-h4ab18f5_0.conda
+    version: 1.0.20
   - category: main
     dependencies:
       __glibc: '>=2.17,<3.0.a0'
@@ -3247,15 +3238,15 @@ package:
     dependencies:
       python: '>=3.8'
     hash:
-      md5: 6f6cf28bf8e021933869bae3f84b8fc9
-      sha256: adc59384cf0b2fc6dc7362840151e8cb076349197a38f7230278252698a88442
+      md5: 95534c6abe3b4bb56c570df48ccf4ca6
+      sha256: 2d57c3e611c25055c56c567b6d9abf44d89bec03ac9c1ebccc698630c187dbaf
     manager: conda
     name: platformdirs
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/noarch/platformdirs-4.2.2-pyhd8ed1ab_0.conda
-    version: 4.2.2
+      https://conda.anaconda.org/conda-forge/noarch/platformdirs-4.3.1-pyhd8ed1ab_0.conda
+    version: 4.3.1
   - category: main
     dependencies:
       python: '>=3.8'
@@ -3284,18 +3275,19 @@ package:
     version: 4.5.0
   - category: main
     dependencies:
-      libgcc-ng: '>=12'
+      __glibc: '>=2.17,<3.0.a0'
+      libgcc: '>=13'
       python: '>=3.11,<3.12.0a0'
       python_abi: 3.11.*
     hash:
-      md5: f1cbef9236edde98a811ba5a98975f2e
-      sha256: 33fea160c284e588f4ff534567e84c8d3679556787708b9bab89a99e5008ac76
+      md5: 493e283ab843404fa36add81fcc49f6c
+      sha256: fcea59a1e8a3fca0fd91d5916221c2a1c24f6cefbcd983f18ad735f71f6df803
     manager: conda
     name: psutil
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/linux-64/psutil-6.0.0-py311h331c9d8_0.conda
+      https://conda.anaconda.org/conda-forge/linux-64/psutil-6.0.0-py311h9ecbd09_1.conda
     version: 6.0.0
   - category: main
     dependencies:
@@ -3533,21 +3525,22 @@ package:
     version: 4.8.0
   - category: main
     dependencies:
+      __glibc: '>=2.17,<3.0.a0'
       cffi: '>=1.4.1'
-      libgcc-ng: '>=12'
-      libsodium: '>=1.0.18,<1.0.19.0a0'
+      libgcc: '>=13'
+      libsodium: '>=1.0.20,<1.0.21.0a0'
       python: '>=3.11,<3.12.0a0'
       python_abi: 3.11.*
       six: ''
     hash:
-      md5: 41431936fe7624294df31197ae699c44
-      sha256: 8547795cd19394c953e5f5bd55bbcfd598b96c4bee7fbc48eaf977b42740a3a7
+      md5: 522059f3c55e201aa5f189fe5276f83f
+      sha256: ce8ba3a3448b6d55a4740b5e826839752976435f0121739565aae5796bcf6dc1
     manager: conda
     name: pynacl
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/linux-64/pynacl-1.5.0-py311h459d7ec_3.conda
+      https://conda.anaconda.org/conda-forge/linux-64/pynacl-1.5.0-py311h9ecbd09_4.conda
     version: 1.5.0
   - category: main
     dependencies:
@@ -4486,14 +4479,14 @@ package:
       libgcc: '>=13'
       libstdcxx: '>=13'
     hash:
-      md5: d27ee6d0cd12ed0f8b4615cfffdf25da
-      sha256: 312e26fef5987ba48f6492f0ef3299ddfe9395db51f412447189f266ea3f022b
+      md5: b7c1524522ed0bfb4e3125f227b3ff24
+      sha256: 54e1232c1cf434b4cbd7f0a8a08e178ddc31ad17166ade9999dcffc583005b2a
     manager: conda
     name: uv
     optional: false
     platform: linux-64
-    url: https://conda.anaconda.org/conda-forge/linux-64/uv-0.4.6-h0f3a69f_0.conda
-    version: 0.4.6
+    url: https://conda.anaconda.org/conda-forge/linux-64/uv-0.4.7-h0f3a69f_0.conda
+    version: 0.4.7
   - category: main
     dependencies:
       distlib: <1,>=0.3.7
@@ -4501,15 +4494,15 @@ package:
       platformdirs: <5,>=3.9.1
       python: '>=3.8'
     hash:
-      md5: 284008712816c64c85bf2b7fa9f3b264
-      sha256: f78961b194e33eed5fdccb668774651ec9423a043069fa7a4e3e2f853b08aa0c
+      md5: 14c15fa7def506fe7d1a0e3abdc212d6
+      sha256: 6eeb4f9e541f2e5198185c44ab4f5a2bdf700ca395b18617e12a8e00cf176d05
     manager: conda
     name: virtualenv
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/noarch/virtualenv-20.26.3-pyhd8ed1ab_0.conda
-    version: 20.26.3
+      https://conda.anaconda.org/conda-forge/noarch/virtualenv-20.26.4-pyhd8ed1ab_0.conda
+    version: 20.26.4
   - category: main
     dependencies:
       msrest: '>=0.6.0,<0.7.0'
