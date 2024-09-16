@@ -222,15 +222,15 @@ package:
       python-dateutil: '>=2.1,<3.0.0'
       urllib3: '>=1.25.4,!=2.2.0,<3'
     hash:
-      md5: 91e8e14dfaf39db76caeba1b215e07cc
-      sha256: 7f7d145c7b1f93e0b44da19cf88b23c24c9a039d05254b181260b3e799304dd0
+      md5: 01ee521cbb052444add409c01b15bc98
+      sha256: 6cefccabf8cf039f6393cada763450172bdd53e9a6c5ccb4354c90f72667910c
     manager: conda
     name: botocore
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/noarch/botocore-1.35.18-pyge310_1234567_0.conda
-    version: 1.35.18
+      https://conda.anaconda.org/conda-forge/noarch/botocore-1.35.19-pyge310_1234567_0.conda
+    version: 1.35.19
   - category: main
     dependencies:
       __glibc: '>=2.17,<3.0.a0'
@@ -652,15 +652,15 @@ package:
   - category: main
     dependencies: {}
     hash:
-      md5: e754777354b60a2edfeedb5379b69913
-      sha256: 4afd14e6659b12450893dae8f3ac2774743da80c30e1f5a08d735352e00c54a3
+      md5: 33ee1a3563c1b20c7f16fa6de42b42ed
+      sha256: 96b3d173ed0be03bbef6392e9f9cb83f4917c21c06ce7de03ed705f52b87a152
     manager: conda
     name: conda-forge-pinning
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/noarch/conda-forge-pinning-2024.09.13.11.38.09-hd8ed1ab_0.conda
-    version: 2024.09.13.11.38.09
+      https://conda.anaconda.org/conda-forge/noarch/conda-forge-pinning-2024.09.16.15.19.34-hd8ed1ab_0.conda
+    version: 2024.09.16.15.19.34
   - category: main
     dependencies:
       attrs: ''
@@ -716,15 +716,15 @@ package:
       wurlitzer: ''
       yaml: ''
     hash:
-      md5: 6431398bb4d2b1f721f6620d80b023d5
-      sha256: 42b90928d12bffe6974c3e4c1c05f5db8ccc5062cfc1d9b81b5652581c79670b
+      md5: 6b43627051ef713a5615a126b9165187
+      sha256: e849930b6474001bda4ccc799620d11c9507e24cf2f5b0205ec239b4f5d1479d
     manager: conda
     name: conda-forge-tick
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/noarch/conda-forge-tick-2024.9.30-pyhd8ed1ab_0.conda
-    version: 2024.9.30
+      https://conda.anaconda.org/conda-forge/noarch/conda-forge-tick-2024.9.31-pyhd8ed1ab_0.conda
+    version: 2024.9.31
   - category: main
     dependencies:
       click: '>=8'
@@ -993,15 +993,15 @@ package:
       pyyaml: '>=5.3.1'
       toolz: '>=0.10.0'
     hash:
-      md5: 8e7524a2fb561506260db789806c7ee9
-      sha256: 1c1b86b719262a7d557327f5c1e363e7039a4078c42270a19dcd9af42fe1404f
+      md5: 8e6585b996dfa6fff92d7ccd0f18bb99
+      sha256: 5664f6a63a482e19dfbaedd3022c8d4f8885f5e702f4bd5a0fb43b3a9d53e576
     manager: conda
     name: dask-core
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/noarch/dask-core-2024.8.2-pyhd8ed1ab_0.conda
-    version: 2024.8.2
+      https://conda.anaconda.org/conda-forge/noarch/dask-core-2024.9.0-pyhd8ed1ab_0.conda
+    version: 2024.9.0
   - category: main
     dependencies:
       expat: '>=2.4.2,<3.0a0'
@@ -1063,7 +1063,7 @@ package:
       click: '>=8.0'
       cloudpickle: '>=3.0.0'
       cytoolz: '>=0.11.2'
-      dask-core: '>=2024.8.2,<2024.8.3.0a0'
+      dask-core: '>=2024.9.0,<2024.9.1.0a0'
       jinja2: '>=2.10.3'
       locket: '>=1.0.0'
       msgpack-python: '>=1.0.2'
@@ -1078,15 +1078,15 @@ package:
       urllib3: '>=1.26.5'
       zict: '>=3.0.0'
     hash:
-      md5: 44d22b5d98a219a4c35cafe9bf3b9ce2
-      sha256: b0eb013bc9fa6d88424ec7bf2a9fb82448d2457edacccc798dea5ef760a6ef01
+      md5: 2e4adbc7926d91412fec7076f14d554d
+      sha256: e318c904cfb81dce68bce2c095aa267901a055b670441ad8cb7bea588aead532
     manager: conda
     name: distributed
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/noarch/distributed-2024.8.2-pyhd8ed1ab_0.conda
-    version: 2024.8.2
+      https://conda.anaconda.org/conda-forge/noarch/distributed-2024.9.0-pyhd8ed1ab_0.conda
+    version: 2024.9.0
   - category: main
     dependencies:
       python: '>=3.6'
@@ -1790,14 +1790,14 @@ package:
     dependencies:
       python: '>=3.6'
     hash:
-      md5: 99e164522f6bdf23c177c8d9ae63f975
-      sha256: 8660d38b272d3713ec8ac5ae918bc3bc80e1b81e1a7d61df554bded71ada6110
+      md5: 7ba2ede0e7c795ff95088daf0dc59753
+      sha256: 8c57fd68e6be5eecba4462e983aed7e85761a519aab80e834bbd7794d4b545b2
     manager: conda
     name: idna
     optional: false
     platform: linux-64
-    url: https://conda.anaconda.org/conda-forge/noarch/idna-3.8-pyhd8ed1ab_0.conda
-    version: '3.8'
+    url: https://conda.anaconda.org/conda-forge/noarch/idna-3.10-pyhd8ed1ab_0.conda
+    version: '3.10'
   - category: main
     dependencies:
       python: '>=3.8'
@@ -3241,15 +3241,15 @@ package:
     dependencies:
       python: '>=3.8'
     hash:
-      md5: e1a2dfcd5695f0744f1bcd3bbfe02523
-      sha256: 3aef5bb863a2db94e47272fd5ec5a5e4b240eafba79ebb9df7a162797cf035a3
+      md5: 32ecde72bc26b834382b93d454c9a68d
+      sha256: 30d9448d38392cc6fcf0c1d515c85c75ecf6b4eaed0895efc1cac9e10cb57c51
     manager: conda
     name: platformdirs
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/noarch/platformdirs-4.3.2-pyhd8ed1ab_0.conda
-    version: 4.3.2
+      https://conda.anaconda.org/conda-forge/noarch/platformdirs-4.3.3-pyhd8ed1ab_0.conda
+    version: 4.3.3
   - category: main
     dependencies:
       python: '>=3.8'
@@ -4484,14 +4484,14 @@ package:
       libgcc: '>=13'
       libstdcxx: '>=13'
     hash:
-      md5: f43ba02ff8f9ab19a47d0038b513b439
-      sha256: 668e4d0fe07910e07d48f8350d2de2718786dfe10ceedcbed9bc53f2728fdf98
+      md5: f064409df7f854f3d9609a133a35aa08
+      sha256: d803412377cc7a63b431d4c13bd48f311df923962ba8ec1a516743e40cf7083a
     manager: conda
     name: uv
     optional: false
     platform: linux-64
-    url: https://conda.anaconda.org/conda-forge/linux-64/uv-0.4.9-h0f3a69f_0.conda
-    version: 0.4.9
+    url: https://conda.anaconda.org/conda-forge/linux-64/uv-0.4.10-h0f3a69f_0.conda
+    version: 0.4.10
   - category: main
     dependencies:
       distlib: <1,>=0.3.7
