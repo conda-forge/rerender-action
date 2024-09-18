@@ -652,15 +652,15 @@ package:
   - category: main
     dependencies: {}
     hash:
-      md5: 58175ddc2adc76d7ff39501335b1581b
-      sha256: 02139f3e0daddf0cddf49828bbac260618f440a46f420c4858427a10e08c2d04
+      md5: 64fe523f64e2ba51c64cd5f08135ea3d
+      sha256: 200062935db1effd793377ad673024f6708be2edc71ddfec408f83248545c90c
     manager: conda
     name: conda-forge-pinning
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/noarch/conda-forge-pinning-2024.09.18.09.57.18-hd8ed1ab_0.conda
-    version: 2024.09.18.09.57.18
+      https://conda.anaconda.org/conda-forge/noarch/conda-forge-pinning-2024.09.18.19.43.35-hd8ed1ab_0.conda
+    version: 2024.09.18.19.43.35
   - category: main
     dependencies:
       attrs: ''
@@ -891,15 +891,15 @@ package:
       toolz: ''
       vsts-python-api: ''
     hash:
-      md5: dbd0ac2cfa5d58573143a69fda26dbc5
-      sha256: 6cda17040dcaa1c4279ee6cda923149d39f603555ebc3b111dd18042221250ff
+      md5: ae33bef932f485eff522669be134d5aa
+      sha256: 683c0b03c2b46c5197ac59910b1137e23bb0f82a497ec19d6a6df0c4d39d41be
     manager: conda
     name: conda-smithy
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/noarch/conda-smithy-3.40.0-unix_pyh707e725_0.conda
-    version: 3.40.0
+      https://conda.anaconda.org/conda-forge/noarch/conda-smithy-3.40.1-unix_pyh707e725_0.conda
+    version: 3.40.1
   - category: main
     dependencies:
       python: '>=3.8'
@@ -2134,27 +2134,27 @@ package:
     dependencies:
       libopenblas: '>=0.3.27,<1.0a0'
     hash:
-      md5: 96c8450a40aa2b9733073a9460de972c
-      sha256: edb1cee5da3ac4936940052dcab6969673ba3874564f90f5110f8c11eed789c2
+      md5: 80aea6603a6813b16ec119d00382b772
+      sha256: 3097f7913bda527d4fe9f824182b314e130044e582455037fca6f4e97965d83c
     manager: conda
     name: libblas
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/linux-64/libblas-3.9.0-23_linux64_openblas.conda
+      https://conda.anaconda.org/conda-forge/linux-64/libblas-3.9.0-24_linux64_openblas.conda
     version: 3.9.0
   - category: main
     dependencies:
       libblas: 3.9.0
     hash:
-      md5: eede29b40efa878cbe5bdcb767e97310
-      sha256: 3e7a3236e7e03e308e1667d91d0aa70edd0cba96b4b5563ef4adde088e0881a5
+      md5: f5b8822297c9c790cec0795ca1fc9be6
+      sha256: 2a52bccc5b03cdf014d856d0b85dbd591faa335ab337d620cd6aded121d7153c
     manager: conda
     name: libcblas
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/linux-64/libcblas-3.9.0-23_linux64_openblas.conda
+      https://conda.anaconda.org/conda-forge/linux-64/libcblas-3.9.0-24_linux64_openblas.conda
     version: 3.9.0
   - category: main
     dependencies:
@@ -2428,14 +2428,14 @@ package:
     dependencies:
       libblas: 3.9.0
     hash:
-      md5: 2af0879961951987e464722fd00ec1e0
-      sha256: 25c7aef86c8a1d9db0e8ee61aa7462ba3b46b482027a65d66eb83e3e6f949043
+      md5: fd540578678aefe025705f4b58b36b2e
+      sha256: a15da20c3c0fb5f356e5b4e2f1e87b0da11b9a46805a7f2609bf30f23453831a
     manager: conda
     name: liblapack
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/linux-64/liblapack-3.9.0-23_linux64_openblas.conda
+      https://conda.anaconda.org/conda-forge/linux-64/liblapack-3.9.0-24_linux64_openblas.conda
     version: 3.9.0
   - category: main
     dependencies:
@@ -3518,15 +3518,15 @@ package:
       python: '>=3.11,<3.12.0a0'
       python_abi: 3.11.*
     hash:
-      md5: fec593b583cd2d0b1da1ba754d002131
-      sha256: 7869923486649f7bb914bd58657ca206b9122cb02f4b893508a76ca2185022e2
+      md5: 60203f03318dd3b676418c1ff7895e8a
+      sha256: cb576cfcdc750b5a7843b97882e9b70e7207d7c87ca1736442c29270825a3fe6
     manager: conda
     name: pymongo
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/linux-64/pymongo-4.8.0-py311hfdbb021_1.conda
-    version: 4.8.0
+      https://conda.anaconda.org/conda-forge/linux-64/pymongo-4.9-py311hfdbb021_0.conda
+    version: '4.9'
   - category: main
     dependencies:
       __glibc: '>=2.17,<3.0.a0'
@@ -4484,14 +4484,14 @@ package:
       libgcc: '>=13'
       libstdcxx: '>=13'
     hash:
-      md5: 952e6cd4853ac2683dba7f31cbf1aa3b
-      sha256: af93d326d1f91aea0cf5e7112f38353d5af9ff9df7ffebb7006ab24900559da5
+      md5: 0165cb4468c6a1789c761318649237f8
+      sha256: 60c7532d8614f381c032a2bcbea90cdf321622bf851a6596ad0a6e7394358530
     manager: conda
     name: uv
     optional: false
     platform: linux-64
-    url: https://conda.anaconda.org/conda-forge/linux-64/uv-0.4.11-h0f3a69f_0.conda
-    version: 0.4.11
+    url: https://conda.anaconda.org/conda-forge/linux-64/uv-0.4.12-h0f3a69f_0.conda
+    version: 0.4.12
   - category: main
     dependencies:
       distlib: <1,>=0.3.7
