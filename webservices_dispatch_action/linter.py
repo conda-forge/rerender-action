@@ -166,4 +166,4 @@ def make_lint_comment(gh, repo, pr_id, lints, hints):
     else:
         pr.create_issue_comment(message)
 
-    return message, status
+    return message + "\nGHA4lyfe", status
