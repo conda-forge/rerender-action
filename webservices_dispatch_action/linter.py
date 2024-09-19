@@ -169,3 +169,56 @@ def make_lint_comment(gh, repo, pr_id, lints, hints):
         pr.create_issue_comment(message)
 
     return message, status
+
+
+def set_pr_status(repo, sha, status, target_url=None):
+    commit = repo.get_commit(sha)
+
+    # get the last github status by the linter, if any
+    # API emmits these in reverse time order so first is latest
+    statuses = commit.get_statuses()
+    last_status = None
+    for status in statuses:
+        if status.context == "conda-forge-linter":
+            last_status = status
+            break
+
+    # convert the linter status to a state
+    lint_status_to_state = {"good": "success", "mixed": "success", "pending": "pending"}
+    lint_new_state = lint_status_to_state.get(status, "failure")
+
+    # make a status only if it is different or we have not ever done it
+    # for this commit
+    if (
+        last_status is None
+        or last_status.state != lint_new_state
+        or last_status.target_url != target_url
+    ):
+        if status == "good":
+            commit.create_status(
+                "success",
+                description="All recipes are excellent.",
+                context="conda-forge-linter",
+                target_url=target_url,
+            )
+        elif status == "mixed":
+            commit.create_status(
+                "success",
+                description="Some recipes have hints.",
+                context="conda-forge-linter",
+                target_url=target_url,
+            )
+        elif status == "pending":
+            commit.create_status(
+                "pending",
+                description="Linting in progress...",
+                context="conda-forge-linter",
+                target_url=target_url,
+            )
+        else:
+            commit.create_status(
+                "failure",
+                description="Some recipes need some changes.",
+                context="conda-forge-linter",
+                target_url=target_url,
+            )

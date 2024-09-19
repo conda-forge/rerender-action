@@ -17,6 +17,7 @@ from webservices_dispatch_action.api_sessions import (
 )
 from webservices_dispatch_action.linter import (
     make_lint_comment,
+    set_pr_status,
 )
 from webservices_dispatch_action.rerendering import (
     rerender,
@@ -250,6 +251,7 @@ def main():
 
                 # run the linter
                 try:
+                    set_pr_status(pr_repo, pr.head.sha, "pending", target_url=None)
                     lints, hints = lint_feedstock(feedstock_dir, use_container=True)
                 except Exception as err:
                     LOGGER.warning("LINTING ERROR: %s", repr(err))
@@ -274,6 +276,7 @@ def main():
                         gh, gh_repo, pr_num, lints, hints
                     )
 
+                set_pr_status(pr_repo, pr.head.sha, status, target_url=None)
                 print(f"Linter status: {status}")
                 print(f"Linter message:\n{message}")
         else:
