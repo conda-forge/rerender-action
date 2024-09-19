@@ -4,13 +4,19 @@ import os
 import pprint
 import subprocess
 import tempfile
+import textwrap
+import traceback
 
+from conda_forge_feedstock_ops.lint import lint as lint_feedstock
 from git import Repo
 
 import webservices_dispatch_action
 from webservices_dispatch_action.api_sessions import (
     create_api_sessions,
     get_actor_token,
+)
+from webservices_dispatch_action.linter import (
+    make_lint_comment,
 )
 from webservices_dispatch_action.rerendering import (
     rerender,
@@ -213,6 +219,61 @@ def main():
                                 rerender_error,
                             ),
                         )
+        elif event_data["action"] == "lint":
+            pr_num = int(event_data["client_payload"]["pr"])
+            repo_name = event_data["repository"]["full_name"]
+
+            gh_repo = gh.get_repo(repo_name)
+            pr = gh_repo.get_pull(pr_num)
+
+            if pr.state == "closed":
+                raise ValueError("Closed PRs are not linted!")
+
+            with tempfile.TemporaryDirectory() as tmpdir:
+                # clone the head repo
+                pr_branch = pr.head.ref
+                pr_owner = pr.head.repo.owner.login
+                pr_repo = pr.head.repo.name
+                repo_url = "https://github.com/%s/%s.git" % (
+                    pr_owner,
+                    pr_repo,
+                )
+                feedstock_dir = os.path.join(
+                    tmpdir,
+                    pr_repo,
+                )
+                git_repo = Repo.clone_from(
+                    repo_url,
+                    feedstock_dir,
+                    branch=pr_branch,
+                )
+
+                # run the linter
+                try:
+                    lints, hints = lint_feedstock(feedstock_dir, use_container=True)
+                except Exception as err:
+                    LOGGER.warning("LINTING ERROR: %s", repr(err))
+                    LOGGER.warning(
+                        "LINTING ERROR TRACEBACK: %s", traceback.format_exc()
+                    )
+                    pr.create_issue_comment(
+                        textwrap.dedent("""
+                        Hi! This is the friendly automated conda-forge-linting service.
+
+                        I Failed to even lint the recipe, probably because of a
+                        conda-smithy bug :cry:.
+                        This likely indicates a problem in your `meta.yaml`, though.
+                        To get a traceback to help figure out what's going on, install
+                        conda-smithy
+                        and run `conda smithy recipe-lint --conda-forge .` from
+                        the recipe directory.
+                        """)
+                    )
+                    status = "bad"
+                else:
+                    status = make_lint_comment(gh, gh_repo, pr_num, lints, hints)
+
+                print(f"Linter status: {status}")
         else:
             raise ValueError(
                 "Dispatch action %s cannot be processed!" % event_data["action"]

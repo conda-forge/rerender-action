@@ -9,7 +9,7 @@ dependencies:
   - conda-smithy >=3.22.0
   - conda-forge-tick >=2024.9.26
   - conda-build
-  - conda-forge-feedstock-ops >=0.3.0
+  - conda-forge-feedstock-ops >=0.6.0
   - pip
   - setuptools
   - setuptools_scm
