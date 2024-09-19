@@ -256,8 +256,7 @@ def main():
                     LOGGER.warning(
                         "LINTING ERROR TRACEBACK: %s", traceback.format_exc()
                     )
-                    pr.create_issue_comment(
-                        textwrap.dedent("""
+                    message = textwrap.dedent("""
                         Hi! This is the friendly automated conda-forge-linting service.
 
                         I Failed to even lint the recipe, probably because of a
@@ -268,12 +267,15 @@ def main():
                         and run `conda smithy recipe-lint --conda-forge .` from
                         the recipe directory.
                         """)
-                    )
+                    pr.create_issue_comment(message)
                     status = "bad"
                 else:
-                    status = make_lint_comment(gh, gh_repo, pr_num, lints, hints)
+                    message, status = make_lint_comment(
+                        gh, gh_repo, pr_num, lints, hints
+                    )
 
                 print(f"Linter status: {status}")
+                print(f"Linter message:\n{message}")
         else:
             raise ValueError(
                 "Dispatch action %s cannot be processed!" % event_data["action"]
