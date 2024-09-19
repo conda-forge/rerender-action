@@ -175,7 +175,7 @@ def set_pr_status(repo, sha, status, target_url=None):
     commit = repo.get_commit(sha)
 
     # get the last github status by the linter, if any
-    # API emmits these in reverse time order so first is latest
+    # API emits these in reverse time order so first is latest
     statuses = commit.get_statuses()
     last_status = None
     for status in statuses:

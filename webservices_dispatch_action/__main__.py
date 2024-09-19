@@ -251,24 +251,22 @@ def main():
 
                 # run the linter
                 try:
-                    set_pr_status(pr_repo, pr.head.sha, "pending", target_url=None)
+                    set_pr_status(pr.head.repo, pr.head.sha, "pending", target_url=None)
                     lints, hints = lint_feedstock(feedstock_dir, use_container=True)
                 except Exception as err:
                     LOGGER.warning("LINTING ERROR: %s", repr(err))
                     LOGGER.warning(
                         "LINTING ERROR TRACEBACK: %s", traceback.format_exc()
                     )
-                    message = textwrap.dedent("""
-                        Hi! This is the friendly automated conda-forge-linting service.
+                    message = textwrap.dedent("""\
+Hi! This is the friendly automated conda-forge-linting service.
 
-                        I Failed to even lint the recipe, probably because of a
-                        conda-smithy bug :cry:.
-                        This likely indicates a problem in your `meta.yaml`, though.
-                        To get a traceback to help figure out what's going on, install
-                        conda-smithy
-                        and run `conda smithy recipe-lint --conda-forge .` from
-                        the recipe directory.
-                        """)
+I Failed to even lint the recipe, probably because of a conda-smithy bug :cry:. \
+This likely indicates a problem in your `meta.yaml`, though. To get a traceback
+to help \
+figure out what's going on, install conda-smithy and run \
+`conda smithy recipe-lint --conda-forge .` from the recipe directory.
+""")
                     pr.create_issue_comment(message)
                     status = "bad"
                 else:
@@ -276,7 +274,7 @@ def main():
                         gh, gh_repo, pr_num, lints, hints
                     )
 
-                set_pr_status(pr_repo, pr.head.sha, status, target_url=None)
+                set_pr_status(pr.head.repo, pr.head.sha, status, target_url=None)
                 print(f"Linter status: {status}")
                 print(f"Linter message:\n{message}")
         else:
