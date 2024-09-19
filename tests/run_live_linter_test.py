@@ -32,6 +32,7 @@ import json
 import os
 import subprocess
 import tempfile
+import time
 
 import requests
 
@@ -62,6 +63,7 @@ def _run_test():
     )
     print("    dispatch event status code:", r.status_code)
     assert r.status_code == 204
+    time.sleep(30)
 
     print("tests passed!")
 

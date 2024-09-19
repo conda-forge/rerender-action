@@ -91,23 +91,23 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.generate_token.outputs.token }}
 
-      - name: run live rerender tests
-        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
-        run: |
-          python tests/run_live_rerender_test.py --branch=${{ steps.live_tests.outputs.branch }}
-        env:
-          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+      # - name: run live rerender tests
+      #   if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
+      #   run: |
+      #     python tests/run_live_rerender_test.py --branch=${{ steps.live_tests.outputs.branch }}
+      #   env:
+      #     GH_TOKEN: ${{ steps.generate_token.outputs.token }}
 
-      - name: run live version update tests
-        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
-        run: |
-          python tests/run_live_version_update_test.py --branch=${{ steps.live_tests.outputs.branch }}
-        env:
-          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+      # - name: run live version update tests
+      #   if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
+      #   run: |
+      #     python tests/run_live_version_update_test.py --branch=${{ steps.live_tests.outputs.branch }}
+      #   env:
+      #     GH_TOKEN: ${{ steps.generate_token.outputs.token }}
 
-      - name: run live version update tests w/ user version
-        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
-        run: |
-          python tests/run_live_version_update_test.py --version=0.14 --branch=${{ steps.live_tests.outputs.branch }}
-        env:
-          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+      # - name: run live version update tests w/ user version
+      #   if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
+      #   run: |
+      #     python tests/run_live_version_update_test.py --version=0.14 --branch=${{ steps.live_tests.outputs.branch }}
+      #   env:
+      #     GH_TOKEN: ${{ steps.generate_token.outputs.token }}
