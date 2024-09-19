@@ -163,15 +163,21 @@ def make_lint_comment(gh, repo, pr_id, lints, hints):
         if comment.body != message:
             if _get_comment_state(comment.body) == _get_comment_state(message):
                 comment.edit(message)
+                msg = comment
             else:
-                pr.create_issue_comment(message)
+                msg = pr.create_issue_comment(message)
     else:
-        pr.create_issue_comment(message)
+        msg = pr.create_issue_comment(message)
 
-    return message, status
+    return msg, status
 
 
 def set_pr_status(repo, sha, status, target_url=None):
+    if target_url is not None:
+        kwargs = {"target_url": target_url}
+    else:
+        kwargs = {}
+
     commit = repo.get_commit(sha)
 
     # get the last github status by the linter, if any
@@ -199,26 +205,26 @@ def set_pr_status(repo, sha, status, target_url=None):
                 "success",
                 description="All recipes are excellent.",
                 context="conda-forge-linter",
-                target_url=target_url,
+                **kwargs,
             )
         elif status == "mixed":
             commit.create_status(
                 "success",
                 description="Some recipes have hints.",
                 context="conda-forge-linter",
-                target_url=target_url,
+                **kwargs,
             )
         elif status == "pending":
             commit.create_status(
                 "pending",
                 description="Linting in progress...",
                 context="conda-forge-linter",
-                target_url=target_url,
+                **kwargs,
             )
         else:
             commit.create_status(
                 "failure",
                 description="Some recipes need some changes.",
                 context="conda-forge-linter",
-                target_url=target_url,
+                **kwargs,
             )

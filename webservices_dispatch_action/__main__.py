@@ -90,7 +90,7 @@ def main():
                     pr_repo=pr_repo,
                     repo_name=repo_name,
                     close_pr_if_no_changes_or_errors=False,
-                    help_message=" or you can try [rerendeing locally](%s)"
+                    help_message=" or you can try [rerendering locally](%s)"
                     % (
                         "https://conda-forge.org/docs/maintainer/updating_pkgs.html"
                         "#rerendering-with-conda-smithy-locally"
@@ -204,7 +204,7 @@ def main():
                         pr_repo=pr_repo,
                         repo_name=repo_name,
                         close_pr_if_no_changes_or_errors=False,
-                        help_message=" or you can try [rerendeing locally](%s)"
+                        help_message=" or you can try [rerendering locally](%s)"
                         % (
                             "https://conda-forge.org/docs/maintainer/updating_pkgs.html"
                             "#rerendering-with-conda-smithy-locally"
@@ -258,25 +258,24 @@ def main():
                     LOGGER.warning(
                         "LINTING ERROR TRACEBACK: %s", traceback.format_exc()
                     )
-                    message = textwrap.dedent("""\
+                    _message = textwrap.dedent("""\
 Hi! This is the friendly automated conda-forge-linting service.
 
 I Failed to even lint the recipe, probably because of a conda-smithy bug :cry:. \
-This likely indicates a problem in your `meta.yaml`, though. To get a traceback
-to help \
-figure out what's going on, install conda-smithy and run \
+This likely indicates a problem in your `meta.yaml`, though. To get a traceback \
+to help figure out what's going on, install conda-smithy and run \
 `conda smithy recipe-lint --conda-forge .` from the recipe directory.
 """)
-                    pr.create_issue_comment(message)
+                    msg = pr.create_issue_comment(_message)
                     status = "bad"
                 else:
-                    message, status = make_lint_comment(
-                        gh, gh_repo, pr_num, lints, hints
-                    )
+                    msg, status = make_lint_comment(gh, gh_repo, pr_num, lints, hints)
 
-                set_pr_status(pr.head.repo, pr.head.sha, status, target_url=None)
+                set_pr_status(
+                    pr.head.repo, pr.head.sha, status, target_url=msg.html_url
+                )
                 print(f"Linter status: {status}")
-                print(f"Linter message:\n{message}")
+                print(f"Linter message:\n{msg.body}")
         else:
             raise ValueError(
                 "Dispatch action %s cannot be processed!" % event_data["action"]
