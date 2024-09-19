@@ -50,8 +50,6 @@ runs:
         git config --global user.name "conda-forge-webservices[bot]"
         git config --global user.email "91080706+conda-forge-webservices[bot]@users.noreply.github.com"
 
-        export CF_TICK_IN_CONTAINER=true
-
         run-webservices-dispatch-action
       env:
         CF_FEEDSTOCK_OPS_CONTAINER_NAME: condaforge/webservices-dispatch-action
