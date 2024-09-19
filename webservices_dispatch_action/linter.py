@@ -149,11 +149,13 @@ def make_lint_comment(gh, repo, pr_id, lints, hints):
             message = bad
             status = "bad"
 
+    message += "\nGHA4lyfe"
+
     pr = repo.get_pull(pr_id)
     comment = None
     for _comment in pr.get_issue_comments():
         if (
-            "Hi! This is the friendly automated " "conda-forge-linting service."
+            "Hi! This is the friendly automated conda-forge-linting service."
         ) in _comment.body:
             comment = _comment
 
@@ -166,4 +168,4 @@ def make_lint_comment(gh, repo, pr_id, lints, hints):
     else:
         pr.create_issue_comment(message)
 
-    return message + "\nGHA4lyfe", status
+    return message, status
