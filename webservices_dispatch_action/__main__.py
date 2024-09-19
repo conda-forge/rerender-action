@@ -36,7 +36,6 @@ def _pull_docker_image():
                 "pull",
                 f"{os.environ['CF_FEEDSTOCK_OPS_CONTAINER_NAME']}:{os.environ['CF_FEEDSTOCK_OPS_CONTAINER_TAG']}",
             ],
-
         )
     finally:
         print("::endgroup::", flush=True)
