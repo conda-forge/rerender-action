@@ -68,7 +68,6 @@ def make_lint_comment(gh, repo, pr_id, lints, hints):
 
         all_pass = True
         messages = []
-        hints = []
         hints_found = False
         for fname in fnames:
             recipe = Path(fname)
@@ -81,7 +80,6 @@ def make_lint_comment(gh, repo, pr_id, lints, hints):
                 )
                 messages.append(hint)
                 # also add it to hints so that the PR is marked as mixed
-                hints.append(hint)
                 hints_found = True
                 continue
 
