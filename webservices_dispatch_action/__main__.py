@@ -27,6 +27,21 @@ from webservices_dispatch_action.utils import comment_and_push_if_changed
 LOGGER = logging.getLogger(__name__)
 
 
+def _pull_docker_image():
+    try:
+        print("::group::docker image pull", flush=True)
+        subprocess.run(
+            [
+                "docker",
+                "pull",
+                f"{os.environ['CF_FEEDSTOCK_OPS_CONTAINER_NAME']}:{os.environ['CF_FEEDSTOCK_OPS_CONTAINER_TAG']}",
+            ],
+
+        )
+    finally:
+        print("::endgroup::", flush=True)
+
+
 def main():
     logging.basicConfig(level=logging.INFO)
 
@@ -74,6 +89,7 @@ def main():
 
                 # rerender
                 _, _, can_change_workflows = get_actor_token()
+                _pull_docker_image()
                 changed, rerender_error, info_message = rerender(
                     git_repo, can_change_workflows
                 )
@@ -139,6 +155,7 @@ def main():
                 _, _, can_change_workflows = get_actor_token()
 
                 # update version
+                _pull_docker_image()
                 curr_head = git_repo.active_branch.commit
                 cmd = (
                     f"run-webservices-dispatch-action-version-updater "
@@ -252,6 +269,7 @@ def main():
                 # run the linter
                 try:
                     set_pr_status(pr.head.repo, pr.head.sha, "pending", target_url=None)
+                    _pull_docker_image()
                     lints, hints = lint_feedstock(feedstock_dir, use_container=True)
                 except Exception as err:
                     LOGGER.warning("LINTING ERROR: %s", repr(err))
