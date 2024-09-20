@@ -16,7 +16,23 @@ def pushd(new_dir):
         os.chdir(previous_dir)
 
 
-def _change_action_branch(branch):
+def _merge_main_to_branch(branch, verbose=False):
+    if verbose:
+        print("merging main into branch...", flush=True)
+    subprocess.run(["git", "checkout", "main"], check=True)
+    subprocess.run(["git", "pull"], check=True)
+    subprocess.run(["git", "checkout", branch], check=True)
+    subprocess.run(["git", "pull"], check=True)
+    subprocess.run(
+        ["git", "merge", "--no-edit", "--strategy-option", "theirs", "main"],
+        check=True,
+    )
+    subprocess.run(["git", "push"], check=True)
+
+
+def _change_action_branch(branch, verbose=False):
+    if verbose:
+        print("moving repo to %s action" % branch, flush=True)
     subprocess.run(["git", "checkout", "main"], check=True, capture_output=True)
 
     data = (
@@ -44,6 +60,8 @@ jobs:
             % data
         )
 
+    if verbose:
+        print("committing...", flush=True)
     subprocess.run(
         ["git", "add", "-f", ".github/workflows/webservices.yml"],
         check=True,
@@ -61,6 +79,8 @@ jobs:
         capture_output=True,
     )
 
+    if verbose:
+        print("push to origin...", flush=True)
     subprocess.run(["git", "pull"], check=True, capture_output=True)
     subprocess.run(["git", "push"], check=True, capture_output=True)
 

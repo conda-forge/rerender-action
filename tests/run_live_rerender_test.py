@@ -28,7 +28,6 @@ Then you can execute this script and it will report the results.
 """
 
 import argparse
-import contextlib
 import glob
 import json
 import os
@@ -37,16 +36,7 @@ import tempfile
 import time
 
 import requests
-
-
-@contextlib.contextmanager
-def pushd(new_dir):
-    previous_dir = os.getcwd()
-    os.chdir(new_dir)
-    try:
-        yield
-    finally:
-        os.chdir(previous_dir)
+from conftest import _change_action_branch, _merge_main_to_branch, pushd
 
 
 def _run_test():
@@ -106,67 +96,6 @@ def _run_test():
     print("tests passed!")
 
 
-def _merge_main_to_branch():
-    print("merging main into branch...", flush=True)
-    subprocess.run("git checkout main", shell=True, check=True)
-    subprocess.run("git pull", shell=True, check=True)
-    subprocess.run("git checkout rerender-live-test", shell=True, check=True)
-    subprocess.run("git pull", shell=True, check=True)
-    subprocess.run(
-        "git merge --no-edit --strategy-option theirs main",
-        shell=True,
-        check=True,
-    )
-    subprocess.run("git push", shell=True, check=True)
-
-
-def _change_action_branch(branch):
-    print("moving repo to %s action" % branch, flush=True)
-    subprocess.run("git checkout main", shell=True, check=True)
-
-    data = (
-        branch,
-        "rerendering_github_token: ${{ secrets.RERENDERING_GITHUB_TOKEN }}",
-    )
-
-    with open(".github/workflows/webservices.yml", "w") as fp:
-        fp.write(
-            """\
-on: repository_dispatch
-
-jobs:
-  webservices:
-    runs-on: ubuntu-latest
-    name: webservices
-    steps:
-      - name: webservices
-        id: webservices
-        uses: conda-forge/webservices-dispatch-action@%s
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          %s
-"""
-            % data
-        )
-
-    print("committing...", flush=True)
-    subprocess.run(
-        "git add -f .github/workflows/webservices.yml", shell=True, check=True
-    )
-    subprocess.run(
-        "git commit "
-        "--allow-empty "
-        "-m "
-        "'[ci skip] move rerender action to branch %s'" % branch,
-        shell=True,
-        check=True,
-    )
-
-    print("push to origin...", flush=True)
-    subprocess.run("git pull", shell=True, check=True)
-    subprocess.run("git push", shell=True, check=True)
-
-
 parser = argparse.ArgumentParser(
     description="Run a live test of the rerendering code",
 )
@@ -209,7 +138,7 @@ with tempfile.TemporaryDirectory() as tmpdir:
 
         with pushd("cf-autotick-bot-test-package-feedstock"):
             try:
-                _change_action_branch(args.branch)
+                _change_action_branch(args.branch, verbose=True)
 
                 print("checkout branch...")
                 subprocess.run(
@@ -252,7 +181,7 @@ with tempfile.TemporaryDirectory() as tmpdir:
                 _run_test()
 
             finally:
-                _change_action_branch("main")
+                _change_action_branch("main", verbose=True)
 
                 print("checkout branch...")
                 subprocess.run(
@@ -296,4 +225,4 @@ with tempfile.TemporaryDirectory() as tmpdir:
                 print("push to origin...")
                 subprocess.run("git push", shell=True, check=True)
 
-                _merge_main_to_branch()
+                _merge_main_to_branch("rerender-live-test", verbose=True)
