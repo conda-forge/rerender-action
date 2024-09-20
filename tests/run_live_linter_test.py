@@ -25,6 +25,7 @@ def test_linter_pr(pr_number, expected_status, expected_msgs, setup_test_action)
     repo = gh.get_repo("conda-forge/conda-forge-webservices")
     pr = repo.get_pull(pr_number)
     commit = repo.get_commit(pr.head.sha)
+    print(pr, commit, pr.head.ref, pr.head.ref.split("/")[-1], flush=True)
 
     setup_test_action(pr.head.ref.split("/")[-1])
 
