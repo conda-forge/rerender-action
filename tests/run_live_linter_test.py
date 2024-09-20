@@ -40,6 +40,29 @@ import requests
                 "I do have some suggestions for making it better though...",
             ],
         ),
+        (
+            57,
+            "failure",
+            [
+                "I was trying to look for recipes to lint for you, but it "
+                "appears we have a merge conflict.",
+            ],
+        ),
+        (
+            56,
+            "failure",
+            [
+                "I was trying to look for recipes to lint for you, but it appears "
+                "we have a merge conflict.",
+            ],
+        ),
+        (
+            54,
+            "success",
+            [
+                "I do have some suggestions for making it better though...",
+            ],
+        ),
     ],
 )
 def test_linter_pr(
