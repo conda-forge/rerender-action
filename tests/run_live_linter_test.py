@@ -46,7 +46,12 @@ def test_linter_pr(
     )
     print("    dispatch event status code:", r.status_code)
     assert r.status_code == 204
-    time.sleep(30)
+    print("sleeping for two minutes to let the linter work...")
+    tot = 0
+    while tot < 120:
+        time.sleep(10)
+        tot += 10
+        print("    slept %s seconds out of 120" % tot, flush=True)
 
     for status in commit.get_statuses():
         if status.context == "conda-forge-linter":

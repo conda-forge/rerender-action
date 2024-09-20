@@ -197,10 +197,6 @@ def set_pr_status(repo, sha, status, target_url=None):
 
     # make a status only if it is different or we have not ever done it
     # for this commit
-    print(
-        f"last_status.state: {last_status.state}, lint_new_state: {lint_new_state}",
-        flush=True,
-    )
     if (
         last_status is None
         or last_status.state != lint_new_state
