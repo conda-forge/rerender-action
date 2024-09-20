@@ -39,7 +39,7 @@ import requests
             [
                 "I do have some suggestions for making it better though...",
             ],
-        )
+        ),
     ],
 )
 def test_linter_pr(
