@@ -86,7 +86,7 @@ jobs:
 
 
 @pytest.fixture(scope="session")
-def setup_test_action():
+def setup_test_action(pytestconfig):
     with tempfile.TemporaryDirectory() as tmpdir:
         with pushd(tmpdir):
             subprocess.run(
@@ -100,8 +100,11 @@ def setup_test_action():
             )
 
             with pushd("conda-forge-webservices"):
-                yield _change_action_branch
-                _change_action_branch("main")
+                try:
+                    _change_action_branch(pytestconfig.getoption("branch"))
+                    yield
+                finally:
+                    _change_action_branch("main")
 
 
 def pytest_addoption(parser):

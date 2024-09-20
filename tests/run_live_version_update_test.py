@@ -149,7 +149,7 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument(
     "--branch",
-    help="the webservices-dispatch-action branch to use for the rerendering test",
+    help="the webservices-dispatch-action branch to use for the test",
     required=True,
 )
 parser.add_argument(
