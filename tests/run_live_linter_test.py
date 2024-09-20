@@ -63,6 +63,20 @@ import requests
                 "I do have some suggestions for making it better though...",
             ],
         ),
+        (
+            17,
+            "failure",
+            [
+                "and found some lint.",
+            ],
+        ),
+        (
+            16,
+            "success",
+            [
+                "and found it was in an excellent condition.",
+            ],
+        ),
     ],
 )
 def test_linter_pr(
