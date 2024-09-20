@@ -86,11 +86,9 @@ def test_linter_pr(
     repo = gh.get_repo("conda-forge/conda-forge-webservices")
     pr = repo.get_pull(pr_number)
     commit = repo.get_commit(pr.head.sha)
-    print(pr, commit, pr.head.ref, pr.head.ref.split("/")[-1], flush=True)
 
     setup_test_action(pytestconfig.getoption("branch"))
 
-    print("sending repo dispatch event to rerender...")
     headers = {
         "authorization": "Bearer %s" % os.environ["GH_TOKEN"],
         "content-type": "application/json",
@@ -103,9 +101,9 @@ def test_linter_pr(
         data=json.dumps({"event_type": "lint", "client_payload": {"pr": pr_number}}),
         headers=headers,
     )
-    print("    dispatch event status code:", r.status_code)
     assert r.status_code == 204
-    print("sleeping for two minutes to let the linter work...")
+
+    print("\nsleeping for two minutes to let the linter work...", flush=True)
     tot = 0
     while tot < 120:
         time.sleep(10)
