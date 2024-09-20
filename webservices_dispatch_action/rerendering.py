@@ -47,8 +47,7 @@ def rerender(git_repo, can_change_workflows):
         if not can_change_workflows:
             # warn the user if the workflows changed but we can't push them
             out = subprocess.run(
-                "git diff --name-only HEAD~1 HEAD",
-                shell=True,
+                ["git", "diff", "--name-only", "HEAD~1", "HEAD"],
                 capture_output=True,
             )
             changed_workflows = any(
@@ -102,8 +101,7 @@ def ensure_output_validation_is_on(git_repo):
             fp.write(yaml.dump(cfg, default_flow_style=False))
 
         subprocess.run(
-            "git add conda-forge.yml",
-            shell=True,
+            ["git", "add", "conda-forge.yml"],
             cwd=git_repo.working_dir,
             env=os.environ,
         )

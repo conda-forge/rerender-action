@@ -28,7 +28,6 @@ Then you can execute this script and it will report the results.
 """
 
 import argparse
-import contextlib
 import glob
 import json
 import os
@@ -37,16 +36,7 @@ import tempfile
 import time
 
 import requests
-
-
-@contextlib.contextmanager
-def pushd(new_dir):
-    previous_dir = os.getcwd()
-    os.chdir(new_dir)
-    try:
-        yield
-    finally:
-        os.chdir(previous_dir)
+from conftest import _change_action_branch, _merge_main_to_branch, pushd
 
 
 def _run_test():
@@ -78,18 +68,18 @@ def _run_test():
         with pushd(tmpdir):
             print("cloning...")
             subprocess.run(
-                "git clone "
-                "https://github.com/conda-forge/"
-                "cf-autotick-bot-test-package-feedstock.git",
-                shell=True,
+                [
+                    "git",
+                    "clone",
+                    "https://github.com/conda-forge/cf-autotick-bot-test-package-feedstock.git",
+                ],
                 check=True,
             )
 
             with pushd("cf-autotick-bot-test-package-feedstock"):
                 print("checkout branch...")
                 subprocess.run(
-                    "git checkout rerender-live-test",
-                    shell=True,
+                    ["git", "checkout", "rerender-live-test"],
                     check=True,
                 )
 
@@ -104,67 +94,6 @@ def _run_test():
                 assert "MNT:" in output
 
     print("tests passed!")
-
-
-def _merge_main_to_branch():
-    print("merging main into branch...", flush=True)
-    subprocess.run("git checkout main", shell=True, check=True)
-    subprocess.run("git pull", shell=True, check=True)
-    subprocess.run("git checkout rerender-live-test", shell=True, check=True)
-    subprocess.run("git pull", shell=True, check=True)
-    subprocess.run(
-        "git merge --no-edit --strategy-option theirs main",
-        shell=True,
-        check=True,
-    )
-    subprocess.run("git push", shell=True, check=True)
-
-
-def _change_action_branch(branch):
-    print("moving repo to %s action" % branch, flush=True)
-    subprocess.run("git checkout main", shell=True, check=True)
-
-    data = (
-        branch,
-        "rerendering_github_token: ${{ secrets.RERENDERING_GITHUB_TOKEN }}",
-    )
-
-    with open(".github/workflows/webservices.yml", "w") as fp:
-        fp.write(
-            """\
-on: repository_dispatch
-
-jobs:
-  webservices:
-    runs-on: ubuntu-latest
-    name: webservices
-    steps:
-      - name: webservices
-        id: webservices
-        uses: conda-forge/webservices-dispatch-action@%s
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          %s
-"""
-            % data
-        )
-
-    print("committing...", flush=True)
-    subprocess.run(
-        "git add -f .github/workflows/webservices.yml", shell=True, check=True
-    )
-    subprocess.run(
-        "git commit "
-        "--allow-empty "
-        "-m "
-        "'[ci skip] move rerender action to branch %s'" % branch,
-        shell=True,
-        check=True,
-    )
-
-    print("push to origin...", flush=True)
-    subprocess.run("git pull", shell=True, check=True)
-    subprocess.run("git push", shell=True, check=True)
 
 
 parser = argparse.ArgumentParser(
@@ -184,13 +113,11 @@ args = parser.parse_args()
 
 if args.build_and_push:
     subprocess.run(
-        "docker build -t condaforge/webservices-dispatch-action:dev .",
-        shell=True,
+        ["docker", "build", "-t", "condaforge/webservices-dispatch-action:dev", "."],
         check=True,
     )
     subprocess.run(
-        "docker push condaforge/webservices-dispatch-action:dev",
-        shell=True,
+        ["docker", "push", "condaforge/webservices-dispatch-action:dev"],
         check=True,
     )
 
@@ -200,69 +127,66 @@ with tempfile.TemporaryDirectory() as tmpdir:
     with pushd(tmpdir):
         print("cloning...")
         subprocess.run(
-            "git clone "
-            "https://x-access-token:${GH_TOKEN}@github.com/conda-forge/"
-            "cf-autotick-bot-test-package-feedstock.git",
-            shell=True,
+            [
+                "git",
+                "clone",
+                f"https://x-access-token:{os.environ['GH_TOKEN']}@github.com/conda-forge/cf-autotick-bot-test-package-feedstock.git",
+            ],
             check=True,
         )
 
         with pushd("cf-autotick-bot-test-package-feedstock"):
             try:
-                _change_action_branch(args.branch)
+                _change_action_branch(args.branch, verbose=True)
 
                 print("checkout branch...")
                 subprocess.run(
-                    "git checkout rerender-live-test",
-                    shell=True,
+                    ["git", "checkout", "rerender-live-test"],
                     check=True,
                 )
 
-                if len(glob.glob(".ci_support/*.yaml")) > 0:
+                ci_support_files = glob.glob(".ci_support/*.yaml")
+                if len(ci_support_files) > 0:
                     print("removing files...")
-                    subprocess.run("git rm .ci_support/*.yaml", shell=True, check=True)
+                    subprocess.run(["git", "rm"] + ci_support_files, check=True)
 
                     print("making an edit to a workflow...")
+                    with open(".github/workflows/automerge.yml", "a") as fp:
+                        fp.write(" \n")
                     subprocess.run(
-                        "echo ' ' >> .github/workflows/automerge.yml",
-                        shell=True,
+                        ["git", "add", "-f", ".github/workflows/automerge.yml"],
                         check=True,
-                    )
-                    subprocess.run(
-                        "git add -f .github/workflows/automerge.yml",
-                        check=True,
-                        shell=True,
                     )
 
                     print("git status...")
-                    subprocess.run("git status", shell=True, check=True)
+                    subprocess.run(["git", "status"], check=True)
 
                     print("committing...")
                     subprocess.run(
-                        "git commit "
-                        "-m "
-                        "'[ci skip] remove ci scripts to trigger rerender'",
-                        shell=True,
+                        [
+                            "git",
+                            "commit",
+                            "-m",
+                            "[ci skip] remove ci scripts to trigger rerender",
+                        ],
                         check=True,
                     )
 
                     print("push to origin...")
-                    subprocess.run("git push", shell=True, check=True)
+                    subprocess.run(["git", "push"], check=True)
 
                 _run_test()
 
             finally:
-                _change_action_branch("main")
+                _change_action_branch("main", verbose=True)
 
                 print("checkout branch...")
                 subprocess.run(
-                    "git checkout rerender-live-test",
-                    shell=True,
+                    ["git", "checkout", "rerender-live-test"],
                     check=True,
                 )
                 subprocess.run(
-                    "git pull",
-                    shell=True,
+                    ["git", "pull"],
                     check=True,
                 )
 
@@ -278,22 +202,23 @@ with tempfile.TemporaryDirectory() as tmpdir:
                     fp.write("".join(lines))
 
                 subprocess.run(
-                    "git add -f .github/workflows/automerge.yml",
+                    ["git", "add", "-f", ".github/workflows/automerge.yml"],
                     check=True,
-                    shell=True,
                 )
 
                 print("committing...")
                 subprocess.run(
-                    "git commit "
-                    "--allow-empty "
-                    "-m "
-                    "'[ci skip] undo workflow changes'",
-                    shell=True,
+                    [
+                        "git",
+                        "commit",
+                        "--allow-empty",
+                        "-m",
+                        "[ci skip] undo workflow changes",
+                    ],
                     check=True,
                 )
 
                 print("push to origin...")
-                subprocess.run("git push", shell=True, check=True)
+                subprocess.run(["git", "push"], check=True)
 
-                _merge_main_to_branch()
+                _merge_main_to_branch("rerender-live-test", verbose=True)

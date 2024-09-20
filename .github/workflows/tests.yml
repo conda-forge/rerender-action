@@ -43,15 +43,6 @@ jobs:
           pytest -vv webservices_dispatch_action
           command -v run-webservices-dispatch-action
 
-      - name: generate token
-        id: generate_token
-        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
-        uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4 # v1
-        with:
-          app-id: ${{ secrets.CF_CURATOR_APP_ID }}
-          private-key: ${{ secrets.CF_CURATOR_PRIVATE_KEY }}
-          owner: ${{ github.repository_owner }}
-
       - name: set up docker buildx
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
         uses: docker/setup-buildx-action@988b5a0280414f521da01fcc63a27aeeb4b104db # v3
@@ -69,6 +60,99 @@ jobs:
         with:
           push: true
           tags: condaforge/webservices-dispatch-action:dev
+
+  linter-tests:
+    name: linter-tests
+    needs: [tests]
+    runs-on: "ubuntu-latest"
+    defaults:
+      run:
+        shell: bash -leo pipefail {0}
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+
+      - name: setup conda
+        uses: mamba-org/setup-micromamba@f8b8a1e23a26f60a44c853292711bacfd3eac822 # v1
+        with:
+          environment-file: conda-lock.yml
+          environment-name: webservices
+          condarc: |
+            show_channel_urls: true
+            channel_priority: strict
+            channels:
+              - conda-forge
+
+      - name: configure conda and install code
+        run: |
+          pip install --no-deps -e .
+
+      - name: generate token
+        id: generate_token
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
+        uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4 # v1
+        with:
+          app-id: ${{ secrets.CF_CURATOR_APP_ID }}
+          private-key: ${{ secrets.CF_CURATOR_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: setup live tests
+        id: live_tests
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
+        run: |
+          git config --global user.name "conda-forge-admin"
+          git config --global user.email "pelson.pub+conda-forge@gmail.com"
+          git config --global pull.rebase false
+          if [[ "${GITHUB_HEAD_REF}" != "" ]]; then
+            branch="${GITHUB_HEAD_REF}"
+          else
+            branch="${GITHUB_REF_NAME}"
+          fi
+          echo "branch=${branch}" >> "$GITHUB_OUTPUT"
+
+      - name: run live linter tests
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
+        run: |
+          pytest -vvs tests/run_live_linter_test.py --branch=${{ steps.live_tests.outputs.branch }}
+        env:
+          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+
+  rerender-version-update-tests:
+    name: rerender-version-update-tests
+    needs: [tests]
+    runs-on: "ubuntu-latest"
+    defaults:
+      run:
+        shell: bash -leo pipefail {0}
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+
+      - name: setup conda
+        uses: mamba-org/setup-micromamba@f8b8a1e23a26f60a44c853292711bacfd3eac822 # v1
+        with:
+          environment-file: conda-lock.yml
+          environment-name: webservices
+          condarc: |
+            show_channel_urls: true
+            channel_priority: strict
+            channels:
+              - conda-forge
+
+      - name: configure conda and install code
+        run: |
+          pip install --no-deps -e .
+
+      - name: generate token
+        id: generate_token
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
+        uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4 # v1
+        with:
+          app-id: ${{ secrets.CF_CURATOR_APP_ID }}
+          private-key: ${{ secrets.CF_CURATOR_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
 
       - name: setup live tests
         id: live_tests

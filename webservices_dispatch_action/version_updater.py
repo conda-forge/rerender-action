@@ -118,16 +118,14 @@ def update_version(git_repo, repo_name, input_version=None):
             fp.write(new_meta_yaml)
 
         subprocess.run(
-            "git add recipe/meta.yaml",
-            shell=True,
+            ["git", "add", "recipe/meta.yaml"],
             cwd=git_repo.working_dir,
             check=True,
             env=os.environ,
         )
 
         subprocess.run(
-            f"git commit -m 'ENH updated version to {new_version}'",
-            shell=True,
+            ["git", "commit", "-m", f"ENH updated version to {new_version}"],
             cwd=git_repo.working_dir,
             check=True,
             env=os.environ,

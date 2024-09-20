@@ -28,7 +28,6 @@ Then you can execute this script and it will report the results.
 """
 
 import argparse
-import contextlib
 import json
 import os
 import subprocess
@@ -36,19 +35,10 @@ import tempfile
 import time
 
 import requests
+from conftest import _change_action_branch, _merge_main_to_branch, pushd
 
 BRANCH = "version-update-live-test"
 PR_NUM = 483
-
-
-@contextlib.contextmanager
-def pushd(new_dir):
-    previous_dir = os.getcwd()
-    os.chdir(new_dir)
-    try:
-        yield
-    finally:
-        os.chdir(previous_dir)
 
 
 def _change_version(new_version="0.13", branch="main"):
@@ -57,7 +47,7 @@ def _change_version(new_version="0.13", branch="main"):
     new_sha = "".join(random.choices("0123456789abcdef", k=64))
 
     print("changing the version to an old one...", flush=True)
-    subprocess.run(f"git checkout {branch}", shell=True, check=True)
+    subprocess.run(["git", "checkout", branch], check=True)
 
     new_lines = []
     with open("recipe/meta.yaml", "r") as fp:
@@ -72,29 +62,20 @@ def _change_version(new_version="0.13", branch="main"):
         fp.write("".join(new_lines))
 
     print("staging file..", flush=True)
-    subprocess.run("git add recipe/meta.yaml", shell=True, check=True)
+    subprocess.run(["git", "add", "recipe/meta.yaml"], check=True)
     subprocess.run(
-        "git commit " "--allow-empty " "-m " "'[ci skip] moved version to older 0.13'",
-        shell=True,
+        [
+            "git",
+            "commit",
+            "--allow-empty",
+            "-m",
+            "[ci skip] moved version to older 0.13",
+        ],
         check=True,
     )
 
     print("push to origin...", flush=True)
-    subprocess.run("git push", shell=True, check=True)
-
-
-def _merge_main_to_branch():
-    print("merging main into branch...", flush=True)
-    subprocess.run("git checkout main", shell=True, check=True)
-    subprocess.run("git pull", shell=True, check=True)
-    subprocess.run(f"git checkout {BRANCH}", shell=True, check=True)
-    subprocess.run("git pull", shell=True, check=True)
-    subprocess.run(
-        "git merge --no-edit --strategy-option theirs main",
-        shell=True,
-        check=True,
-    )
-    subprocess.run("git push", shell=True, check=True)
+    subprocess.run(["git", "push"], check=True)
 
 
 def _run_test(version):
@@ -135,18 +116,18 @@ def _run_test(version):
         with pushd(tmpdir):
             print("cloning...", flush=True)
             subprocess.run(
-                "git clone "
-                "https://github.com/conda-forge/"
-                "cf-autotick-bot-test-package-feedstock.git",
-                shell=True,
+                [
+                    "git",
+                    "clone",
+                    "https://github.com/conda-forge/cf-autotick-bot-test-package-feedstock.git",
+                ],
                 check=True,
             )
 
             with pushd("cf-autotick-bot-test-package-feedstock"):
                 print("checkout branch...", flush=True)
                 subprocess.run(
-                    f"git checkout {BRANCH}",
-                    shell=True,
+                    ["git", "checkout", BRANCH],
                     check=True,
                 )
 
@@ -163,57 +144,12 @@ def _run_test(version):
     print("tests passed!", flush=True)
 
 
-def _change_action_branch(branch):
-    print("moving repo to %s action" % branch, flush=True)
-    subprocess.run("git checkout main", shell=True, check=True)
-    subprocess.run("git pull", shell=True, check=True)
-
-    data = (
-        branch,
-        "rerendering_github_token: ${{ secrets.RERENDERING_GITHUB_TOKEN }}",
-    )
-
-    with open(".github/workflows/webservices.yml", "w") as fp:
-        fp.write(
-            """\
-on: repository_dispatch
-
-jobs:
-  webservices:
-    runs-on: ubuntu-latest
-    name: webservices
-    steps:
-      - name: webservices
-        id: webservices
-        uses: conda-forge/webservices-dispatch-action@%s
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          %s
-"""
-            % data
-        )
-
-    print("committing...", flush=True)
-    subprocess.run("git add .github/workflows/webservices.yml", shell=True, check=True)
-    subprocess.run(
-        "git commit "
-        "--allow-empty "
-        "-m "
-        "'[ci skip] move rerender action to branch %s'" % branch,
-        shell=True,
-        check=True,
-    )
-
-    print("push to origin...", flush=True)
-    subprocess.run("git push", shell=True, check=True)
-
-
 parser = argparse.ArgumentParser(
     description="Run a live test of the rerendering code",
 )
 parser.add_argument(
     "--branch",
-    help="the webservices-dispatch-action branch to use for the rerendering test",
+    help="the webservices-dispatch-action branch to use for the test",
     required=True,
 )
 parser.add_argument(
@@ -226,13 +162,11 @@ args = parser.parse_args()
 
 if args.build_and_push:
     subprocess.run(
-        "docker build -t condaforge/webservices-dispatch-action:dev .",
-        shell=True,
+        ["docker", "build", "-t", "condaforge/webservices-dispatch-action:dev", "."],
         check=True,
     )
     subprocess.run(
-        "docker push condaforge/webservices-dispatch-action:dev",
-        shell=True,
+        ["docker", "push", "condaforge/webservices-dispatch-action:dev"],
         check=True,
     )
 
@@ -242,22 +176,23 @@ with tempfile.TemporaryDirectory() as tmpdir:
     with pushd(tmpdir):
         print("cloning...", flush=True)
         subprocess.run(
-            "git clone "
-            "https://x-access-token:${GH_TOKEN}@github.com/conda-forge/"
-            "cf-autotick-bot-test-package-feedstock.git",
-            shell=True,
+            [
+                "git",
+                "clone",
+                f"https://x-access-token:{os.environ['GH_TOKEN']}@github.com/conda-forge/cf-autotick-bot-test-package-feedstock.git",
+            ],
             check=True,
         )
 
         with pushd("cf-autotick-bot-test-package-feedstock"):
             try:
-                _change_action_branch(args.branch)
+                _change_action_branch(args.branch, verbose=True)
                 _change_version(new_version="0.13", branch="main")
-                _merge_main_to_branch()
+                _merge_main_to_branch(BRANCH, verbose=True)
                 _change_version(new_version="0.13", branch=BRANCH)
                 _run_test(args.version)
             finally:
-                _change_action_branch("main")
+                _change_action_branch("main", verbose=True)
                 _change_version(new_version="0.14", branch="main")
-                _merge_main_to_branch()
+                _merge_main_to_branch(BRANCH, verbose=True)
                 _change_version(new_version="0.13", branch=BRANCH)
