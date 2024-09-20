@@ -18,6 +18,28 @@ import requests
                 "This is a v1 recipe and not yet lintable. We are working on it!",
             ],
         ),
+        (
+            523,
+            "failure",
+            [
+                "I was trying to look for recipes to lint for "
+                "you, but couldn't find any.",
+            ],
+        ),
+        (
+            217,
+            "success",
+            [
+                "I do have some suggestions for making it better though...",
+            ],
+        ),
+        (
+            62,
+            "success",
+            [
+                "I do have some suggestions for making it better though...",
+            ],
+        )
     ],
 )
 def test_linter_pr(
