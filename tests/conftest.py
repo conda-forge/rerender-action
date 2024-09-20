@@ -17,7 +17,7 @@ def pushd(new_dir):
 
 
 def _change_action_branch(branch):
-    subprocess.run("git checkout main", check=True, capture_output=True)
+    subprocess.run("git checkout main", shell=True, check=True, capture_output=True)
 
     data = (
         branch,
