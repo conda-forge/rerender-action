@@ -8,7 +8,7 @@ import requests
 
 
 @pytest.mark.parametrize(
-    "pr_number,exports_status,expected_msg",
+    "pr_number,expected_status,expected_msgs",
     [
         (
             632,
