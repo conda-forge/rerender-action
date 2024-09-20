@@ -87,7 +87,7 @@ jobs:
       - name: run live linter tests
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == 'conda-forge/webservices-dispatch-action'
         run: |
-          pytest -vvsx tests/run_live_linter_test.py
+          pytest -vvsx tests/run_live_linter_test.py --branch=${{ steps.live_tests.outputs.branch }}
         env:
           GH_TOKEN: ${{ steps.generate_token.outputs.token }}
 

@@ -166,6 +166,8 @@ def make_lint_comment(gh, repo, pr_id, lints, hints):
                 msg = comment
             else:
                 msg = pr.create_issue_comment(message)
+        else:
+            msg = comment
     else:
         msg = pr.create_issue_comment(message)
 
@@ -184,9 +186,9 @@ def set_pr_status(repo, sha, status, target_url=None):
     # API emits these in reverse time order so first is latest
     statuses = commit.get_statuses()
     last_status = None
-    for status in statuses:
-        if status.context == "conda-forge-linter":
-            last_status = status
+    for _status in statuses:
+        if _status.context == "conda-forge-linter":
+            last_status = _status
             break
 
     # convert the linter status to a state
