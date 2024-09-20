@@ -79,3 +79,7 @@ def setup_test_action():
             with pushd("conda-forge-webservices"):
                 yield _change_action_branch
                 _change_action_branch("main")
+
+
+def pytest_addoption(parser):
+    parser.addoption("--branch", action="store")

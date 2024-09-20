@@ -20,14 +20,16 @@ import requests
         ),
     ],
 )
-def test_linter_pr(pr_number, expected_status, expected_msgs, setup_test_action):
-    gh = github.Github(github.Auth.Token(os.environ["GH_TOKEN"]))
+def test_linter_pr(
+    pr_number, expected_status, expected_msgs, setup_test_action, pytestconfig
+):
+    gh = github.Github(auth=github.Auth.Token(os.environ["GH_TOKEN"]))
     repo = gh.get_repo("conda-forge/conda-forge-webservices")
     pr = repo.get_pull(pr_number)
     commit = repo.get_commit(pr.head.sha)
     print(pr, commit, pr.head.ref, pr.head.ref.split("/")[-1], flush=True)
 
-    setup_test_action(pr.head.ref.split("/")[-1])
+    setup_test_action(pytestconfig.getoption("branch"))
 
     print("sending repo dispatch event to rerender...")
     headers = {
