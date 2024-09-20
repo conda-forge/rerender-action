@@ -156,17 +156,18 @@ def main():
                 # update version
                 _pull_docker_image()
                 curr_head = git_repo.active_branch.commit
-                cmd = (
-                    f"run-webservices-dispatch-action-version-updater "
-                    f"--feedstock-dir {feedstock_dir} "
-                    f"--repo-name {repo_name}"
-                )
+                cmd = [
+                    "run-webservices-dispatch-action-version-updater",
+                    "--feedstock-dir",
+                    feedstock_dir,
+                    "--repo-name",
+                    repo_name,
+                ]
                 if input_version:
-                    cmd += f" --input-version {input_version}"
-                LOGGER.info(f"Running command {cmd}")
+                    cmd += ["--input-version", input_version]
+                LOGGER.info(f"Running command {' '.join(cmd)}")
                 ret = subprocess.run(
                     cmd,
-                    shell=True,
                     env=os.environ,
                 )
                 if ret.returncode != 0:

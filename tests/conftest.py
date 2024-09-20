@@ -17,7 +17,7 @@ def pushd(new_dir):
 
 
 def _change_action_branch(branch):
-    subprocess.run("git checkout main", shell=True, check=True, capture_output=True)
+    subprocess.run(["git", "checkout", "main"], check=True, capture_output=True)
 
     data = (
         branch,
@@ -45,23 +45,24 @@ jobs:
         )
 
     subprocess.run(
-        "git add -f .github/workflows/webservices.yml",
-        shell=True,
+        ["git", "add", "-f", ".github/workflows/webservices.yml"],
         check=True,
         capture_output=True,
     )
     subprocess.run(
-        "git commit "
-        "--allow-empty "
-        "-m "
-        "'[ci skip] move rerender action to branch %s'" % branch,
-        shell=True,
+        [
+            "git",
+            "commit",
+            "--allow-empty",
+            "-m",
+            "[ci skip] move rerender action to branch %s" % branch,
+        ],
         check=True,
         capture_output=True,
     )
 
-    subprocess.run("git pull", shell=True, check=True, capture_output=True)
-    subprocess.run("git push", shell=True, check=True, capture_output=True)
+    subprocess.run(["git", "pull"], check=True, capture_output=True)
+    subprocess.run(["git", "push"], check=True, capture_output=True)
 
 
 @pytest.fixture(scope="session")
@@ -69,10 +70,11 @@ def setup_test_action():
     with tempfile.TemporaryDirectory() as tmpdir:
         with pushd(tmpdir):
             subprocess.run(
-                "git clone "
-                "https://x-access-token:${GH_TOKEN}@github.com/conda-forge/"
-                "conda-forge-webservices.git",
-                shell=True,
+                [
+                    "git",
+                    "clone",
+                    f"https://x-access-token:{os.environ['GH_TOKEN']}@github.com/conda-forge/conda-forge-webservices.git",
+                ],
                 check=True,
                 capture_output=True,
             )
