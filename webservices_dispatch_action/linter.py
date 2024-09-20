@@ -149,8 +149,6 @@ def make_lint_comment(gh, repo, pr_id, lints, hints):
             message = bad
             status = "bad"
 
-    message += "\nGHA4lyfe"
-
     pr = repo.get_pull(pr_id)
     comment = None
     for _comment in pr.get_issue_comments():
