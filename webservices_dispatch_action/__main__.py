@@ -268,7 +268,7 @@ def main():
 
                 # run the linter
                 try:
-                    set_pr_status(pr.head.repo, pr.head.sha, "pending", target_url=None)
+                    set_pr_status(pr.base.repo, pr.head.sha, "pending", target_url=None)
                     _pull_docker_image()
                     lints, hints = lint_feedstock(feedstock_dir, use_container=True)
                 except Exception as err:
@@ -290,7 +290,7 @@ to help figure out what's going on, install conda-smithy and run \
                     msg, status = make_lint_comment(gh, gh_repo, pr_num, lints, hints)
 
                 set_pr_status(
-                    pr.head.repo, pr.head.sha, status, target_url=msg.html_url
+                    pr.base.repo, pr.head.sha, status, target_url=msg.html_url
                 )
                 print(f"Linter status: {status}")
                 print(f"Linter message:\n{msg.body}")
