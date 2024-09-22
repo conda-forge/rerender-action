@@ -51,7 +51,31 @@ def _get_comment_state(comment):
         return "good"
 
 
-def make_lint_comment(gh, repo, pr_id, lints, hints):
+def make_lint_comment(repo, pr_id, message):
+    pr = repo.get_pull(pr_id)
+    comment = None
+    for _comment in pr.get_issue_comments():
+        if (
+            "Hi! This is the friendly automated conda-forge-linting service."
+        ) in _comment.body:
+            comment = _comment
+
+    if comment:
+        if comment.body != message:
+            if _get_comment_state(comment.body) == _get_comment_state(message):
+                comment.edit(message)
+                msg = comment
+            else:
+                msg = pr.create_issue_comment(message)
+        else:
+            msg = comment
+    else:
+        msg = pr.create_issue_comment(message)
+
+    return msg
+
+
+def build_and_make_lint_comment(gh, repo, pr_id, lints, hints):
     mergeable = _is_mergeable(repo, pr_id)
     if not mergeable:
         message = textwrap.dedent("""
@@ -149,25 +173,7 @@ def make_lint_comment(gh, repo, pr_id, lints, hints):
             message = bad
             status = "bad"
 
-    pr = repo.get_pull(pr_id)
-    comment = None
-    for _comment in pr.get_issue_comments():
-        if (
-            "Hi! This is the friendly automated conda-forge-linting service."
-        ) in _comment.body:
-            comment = _comment
-
-    if comment:
-        if comment.body != message:
-            if _get_comment_state(comment.body) == _get_comment_state(message):
-                comment.edit(message)
-                msg = comment
-            else:
-                msg = pr.create_issue_comment(message)
-        else:
-            msg = comment
-    else:
-        msg = pr.create_issue_comment(message)
+    msg = make_lint_comment(repo, pr_id, message)
 
     return msg, status
 

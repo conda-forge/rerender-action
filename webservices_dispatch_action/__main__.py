@@ -16,6 +16,7 @@ from webservices_dispatch_action.api_sessions import (
     get_actor_token,
 )
 from webservices_dispatch_action.linter import (
+    build_and_make_lint_comment,
     make_lint_comment,
     set_pr_status,
 )
@@ -284,10 +285,12 @@ This likely indicates a problem in your `meta.yaml`, though. To get a traceback 
 to help figure out what's going on, install conda-smithy and run \
 `conda smithy recipe-lint --conda-forge .` from the recipe directory.
 """)
-                    msg = pr.create_issue_comment(_message)
+                    msg = make_lint_comment(gh_repo, pr_num, _message)
                     status = "bad"
                 else:
-                    msg, status = make_lint_comment(gh, gh_repo, pr_num, lints, hints)
+                    msg, status = build_and_make_lint_comment(
+                        gh, gh_repo, pr_num, lints, hints
+                    )
 
                 set_pr_status(
                     pr.base.repo, pr.head.sha, status, target_url=msg.html_url
