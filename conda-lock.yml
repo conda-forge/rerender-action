@@ -13,7 +13,7 @@
 version: 1
 metadata:
   content_hash:
-    linux-64: 3e45413ad95de265d724773ff01e431fea6cf670f9f403f2925f028aff483c8d
+    linux-64: 2b18c9e7b2ba904d5fd96a7d385f4eeea59e81184c389d6d83ee9087ef6a0a28
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -602,7 +602,7 @@ package:
   category: main
   optional: false
 - name: conda-forge-feedstock-ops
-  version: 0.6.0
+  version: 0.6.1
   manager: conda
   platform: linux-64
   dependencies:
@@ -613,10 +613,10 @@ package:
     python-rapidjson: ''
     pyyaml: ''
     rattler-build-conda-compat: '>=0.0.2,<2.0.0a0'
-  url: https://conda.anaconda.org/conda-forge/noarch/conda-forge-feedstock-ops-0.6.0-pyhd8ed1ab_0.conda
+  url: https://conda.anaconda.org/conda-forge/noarch/conda-forge-feedstock-ops-0.6.1-pyhd8ed1ab_0.conda
   hash:
-    md5: 3e4b9fcc968713f529f2080b7cefb955
-    sha256: b340e4218a974cfc26ba961d002ca70f2b1a5aab2959bbd47d8a6dec6f04e609
+    md5: 18d8a115605dccbcdd1d9f2b82c026eb
+    sha256: 8fc0439ef0d9709132aa90639a3d186de0634b09e57ec2afc41baba2bd2d42b4
   category: main
   optional: false
 - name: conda-forge-metadata
