@@ -101,12 +101,15 @@ def build_and_make_lint_comment(gh, repo, pr_id, lints, hints):
         else:
             recipes_to_lint = set(fnames)
 
+        linted_recipes = []
         all_pass = True
         messages = []
         hints_found = False
         for fname in fnames:
             if fname not in recipes_to_lint:
                 continue
+
+            linted_recipes.append(fname)
 
             _lints = lints.get(fname, [])
             _hints = hints.get(fname, [])
@@ -127,7 +130,7 @@ def build_and_make_lint_comment(gh, repo, pr_id, lints, hints):
                 )
 
         # Put the recipes in the form "```recipe/a```, ```recipe/b```".
-        recipe_code_blocks = ", ".join(f"```{r}```" for r in fnames)
+        recipe_code_blocks = ", ".join(f"```{r}```" for r in linted_recipes)
 
         good = textwrap.dedent(
             f"""
