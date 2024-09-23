@@ -8,10 +8,10 @@ import requests
 TEST_CASES = [
     (
         632,
-        "success",
+        "failure",
         [
-            "and found it was in an excellent condition.",
-            "This is a v1 recipe and not yet lintable. We are working on it!",
+            "and found some lint.",
+            "feedstock has no `.ci_support` files and thus will not build any packages",
         ],
     ),
     (
