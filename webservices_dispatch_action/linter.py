@@ -1,6 +1,5 @@
 import textwrap
 import time
-from pathlib import Path
 
 
 def _is_mergeable(repo, pr_id):
@@ -90,21 +89,23 @@ def build_and_make_lint_comment(gh, repo, pr_id, lints, hints):
     else:
         fnames = set(hints.keys()) | set(lints.keys())
 
+        if repo.name == "staged-recipes":
+            pr = repo.get_pull(pr_id)
+            recipes_to_lint = set(f.filename for f in pr.get_files())
+            recipes_to_lint = set(
+                fname
+                for fname in recipes_to_lint
+                if fname
+                not in ["recipes/example/meta.yaml", "recipes/example-v1/recipe.yaml"]
+            )
+        else:
+            recipes_to_lint = set(fnames)
+
         all_pass = True
         messages = []
         hints_found = False
         for fname in fnames:
-            recipe = Path(fname)
-
-            if recipe.name == "recipe.yaml":
-                # this is a v1 recipe and not yet handled
-                hint = "\nFor **{}**:\n\n{}".format(
-                    fname,
-                    "This is a v1 recipe and not yet lintable. We are working on it!",
-                )
-                messages.append(hint)
-                # also add it to hints so that the PR is marked as mixed
-                hints_found = True
+            if fname not in recipes_to_lint:
                 continue
 
             _lints = lints.get(fname, [])
