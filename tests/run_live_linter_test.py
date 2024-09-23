@@ -111,15 +111,13 @@ def test_linter_pr(setup_test_action):
         pr = repo.get_pull(pr_number)
         commit = repo.get_commit(pr.head.sha)
 
-        for status in commit.get_statuses():
-            if status.context == "conda-forge-linter":
+        status = None
+        for _status in commit.get_statuses():
+            if _status.context == "conda-forge-linter":
+                status = _status
                 break
 
-        assert status.state == expected_status, (
-            pr_number,
-            status.state,
-            expected_status,
-        )
+        assert status is not None
 
         comment = None
         for _comment in pr.get_issue_comments():
@@ -130,5 +128,13 @@ def test_linter_pr(setup_test_action):
                 comment = _comment
 
         assert comment is not None
+
+        assert status.state == expected_status, (
+            pr_number,
+            status.state,
+            expected_status,
+            comment.body,
+        )
+
         for expected_msg in expected_msgs:
             assert expected_msg in comment.body
