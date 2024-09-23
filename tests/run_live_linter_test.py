@@ -115,7 +115,11 @@ def test_linter_pr(setup_test_action):
             if status.context == "conda-forge-linter":
                 break
 
-        assert status.state == expected_status
+        assert status.state == expected_status, (
+            pr_number,
+            status.state,
+            expected_status,
+        )
 
         comment = None
         for _comment in pr.get_issue_comments():
