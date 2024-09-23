@@ -601,15 +601,15 @@ package:
       wurlitzer: ''
       zstandard: ''
     hash:
-      md5: 6e3b9cbc69fa2d087a3a81fefc8d3f21
-      sha256: 36154ca87b72f586b5a4bff17eccad21ef66b10e9790438c5a27157b0469c570
+      md5: 57c43c190998cb3ae14b3362b721276c
+      sha256: 6bc9b418a4f819b022130dcb433c62d6b19c07d38d282b406071dfab8277bae5
     manager: conda
     name: conda-forge-feedstock-check-solvable
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/noarch/conda-forge-feedstock-check-solvable-0.7.4-pyhd8ed1ab_0.conda
-    version: 0.7.4
+      https://conda.anaconda.org/conda-forge/noarch/conda-forge-feedstock-check-solvable-0.8.0-pyhd8ed1ab_0.conda
+    version: 0.8.0
   - category: main
     dependencies:
       click: ''
@@ -620,15 +620,15 @@ package:
       pyyaml: ''
       rattler-build-conda-compat: '>=0.0.2,<2.0.0a0'
     hash:
-      md5: 18d8a115605dccbcdd1d9f2b82c026eb
-      sha256: 8fc0439ef0d9709132aa90639a3d186de0634b09e57ec2afc41baba2bd2d42b4
+      md5: cf4b83a77fd962fbf4baa6d190c85302
+      sha256: a23ab9cdc6f5f4594b0b427898c42b8600596f92b1711f3b5c0793048fee41d7
     manager: conda
     name: conda-forge-feedstock-ops
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/noarch/conda-forge-feedstock-ops-0.6.1-pyhd8ed1ab_0.conda
-    version: 0.6.1
+      https://conda.anaconda.org/conda-forge/noarch/conda-forge-feedstock-ops-0.7.0-pyhd8ed1ab_0.conda
+    version: 0.7.0
   - category: main
     dependencies:
       beautifulsoup4: ''
@@ -652,15 +652,15 @@ package:
   - category: main
     dependencies: {}
     hash:
-      md5: 38deb94d052e340ff511db3cd173d2c0
-      sha256: 48b8bb181dcf617994f33befa79a2f5d6836472dd031ad469f5a4d18033a42a5
+      md5: e51a7a6af3e387c8ec13854dabb207a1
+      sha256: d7e5960393ac237caae144e598b714fcc92463cb3a629ab48501cdeb773d1c9e
     manager: conda
     name: conda-forge-pinning
     optional: false
     platform: linux-64
     url:
-      https://conda.anaconda.org/conda-forge/noarch/conda-forge-pinning-2024.09.23.02.42.53-hd8ed1ab_0.conda
-    version: 2024.09.23.02.42.53
+      https://conda.anaconda.org/conda-forge/noarch/conda-forge-pinning-2024.09.23.09.40.07-hd8ed1ab_0.conda
+    version: 2024.09.23.09.40.07
   - category: main
     dependencies:
       attrs: ''
