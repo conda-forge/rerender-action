@@ -205,9 +205,7 @@ def main(
     if input_version is None and pr_number is not None and found_version:
         # We had to find the latest versions ourselves, so now we should
         # update the generic PR title to refelect the found version
-        _, title_error = update_pr_title(
-            repo_name, pr_number, found_version
-        )
+        _, title_error = update_pr_title(repo_name, pr_number, found_version)
         if title_error:
             sys.exit(1)
 
