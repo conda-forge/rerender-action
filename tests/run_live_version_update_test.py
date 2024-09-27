@@ -103,9 +103,7 @@ def _run_test(version):
         "content-type": "application/json",
     }
     r = requests.post(
-        (
-            f"https://api.github.com/repos/{REPO}/dispatches"
-        ),
+        (f"https://api.github.com/repos/{REPO}/dispatches"),
         data=json.dumps(
             {
                 "event_type": "version_update",
