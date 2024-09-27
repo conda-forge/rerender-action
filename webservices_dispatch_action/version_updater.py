@@ -6,6 +6,7 @@ import sys
 
 import click
 import conda_forge_tick.update_recipe
+import github
 from conda.models.version import VersionOrder
 from conda_forge_tick.feedstock_parser import load_feedstock
 from conda_forge_tick.update_recipe.version import update_version_feedstock_dir
@@ -28,7 +29,9 @@ setup_logging()
 LOGGER = logging.getLogger(__name__)
 
 
-def update_version(git_repo, repo_name, input_version=None):
+def update_version(
+    git_repo, repo_name, input_version=None
+) -> tuple[bool, bool, str | None]:
     name = os.path.basename(repo_name).rsplit("-", 1)[0]
     LOGGER.info("using feedstock name %s for repo %s", name, repo_name)
 
@@ -38,7 +41,7 @@ def update_version(git_repo, repo_name, input_version=None):
         LOGGER.info("feedstock attrs:\n%s\n", pprint.pformat(attrs))
     except Exception:
         LOGGER.exception("error while computing feedstock attributes!")
-        return False, True
+        return False, True, None
 
     if input_version is None or input_version == "null":
         try:
@@ -69,7 +72,7 @@ def update_version(git_repo, repo_name, input_version=None):
                 raise RuntimeError("Could not fetch latest version!")
         except Exception:
             LOGGER.exception("error while getting feedstock version!")
-            return False, True
+            return False, True, None
     else:
         LOGGER.info("using input version")
         new_version = input_version
@@ -87,7 +90,7 @@ def update_version(git_repo, repo_name, input_version=None):
         LOGGER.info(
             "not updating since new version is less or equal to current version"
         )
-        return False, False
+        return False, False, new_version
 
     try:
         updated, errors = update_version_feedstock_dir(
@@ -111,7 +114,7 @@ def update_version(git_repo, repo_name, input_version=None):
             fp.write(new_meta_yaml)
     except Exception:
         LOGGER.exception("error while updating the recipe!")
-        return False, True
+        return False, True, new_version
 
     try:
         with open(os.path.join(git_repo.working_dir, "recipe", "meta.yaml"), "w") as fp:
@@ -132,9 +135,34 @@ def update_version(git_repo, repo_name, input_version=None):
         )
     except Exception:
         LOGGER.exception("error while committing new recipe to repo")
-        return False, True
+        return False, True, new_version
 
-    return True, False
+    return True, False, new_version
+
+
+def update_pr_title(repo_name: str, pr_number: int, found_version: str) -> bool:
+    try:
+        gh = github.Github(os.environ["GH_TOKEN"])
+        repo = gh.get_repo(repo_name)
+        pr = repo.get_pull(pr_number)
+    except Exception:
+        LOGGER.exception(
+            "error while trying to get PR title for %s#%s",
+            repo_name,
+            pr_number,
+        )
+        return False
+    if pr.title == "ENH: update package version":  # user didn't change the default
+        try:
+            pr.edit(title=f"{pr.title} to {found_version}")
+        except Exception:
+            LOGGER.exception(
+                "error while trying to change PR title for %s#%s",
+                repo_name,
+                pr_number,
+            )
+            return False
+    return True
 
 
 @click.command()
@@ -148,7 +176,7 @@ def update_version(git_repo, repo_name, input_version=None):
     "--repo-name",
     required=True,
     type=str,
-    help="The name of the repository",
+    help="The name of the repository (as '<owner>/<name>')",
 )
 @click.option(
     "--input-version",
@@ -157,14 +185,22 @@ def update_version(git_repo, repo_name, input_version=None):
     default=None,
     help="The version to update to",
 )
+@click.option(
+    "--pr-number",
+    required=False,
+    type=int,
+    default=None,
+    help="PR number. Needed for PR title updates.",
+)
 def main(
     feedstock_dir,
     repo_name,
     input_version=None,
+    pr_number=None,
 ):
     git_repo = Repo(feedstock_dir)
 
-    _, version_error = update_version(
+    _, version_error, found_version = update_version(
         git_repo,
         repo_name,
         input_version=input_version,
@@ -172,5 +208,12 @@ def main(
 
     if version_error:
         sys.exit(1)
-    else:
-        sys.exit(0)
+
+    if input_version is None and found_version and pr_number is not None:
+        # We had to find the latest versions ourselves, so now we should
+        # update the generic PR title to refelect the found version
+        ok = update_pr_title(repo_name, pr_number, found_version)
+        if not ok:
+            sys.exit(1)
+
+    sys.exit(0)

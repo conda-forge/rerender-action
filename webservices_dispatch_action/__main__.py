@@ -165,6 +165,8 @@ def main():
                     feedstock_dir,
                     "--repo-name",
                     repo_name,
+                    "--pr-number",
+                    pr_num,
                 ]
                 if input_version:
                     cmd += ["--input-version", input_version]
