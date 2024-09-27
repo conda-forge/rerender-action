@@ -54,8 +54,10 @@ def main():
         event_data = json.load(fp)
     event_name = os.environ["GITHUB_EVENT_NAME"].lower()
 
+    print("::group::github event", flush=True)
     LOGGER.info("github event: %s", event_name)
     LOGGER.info("github event data:\n%s\n", pprint.pformat(event_data))
+    print("::endgroup::", flush=True)
 
     if event_name in ["repository_dispatch"]:
         if event_data["action"] == "rerender":
