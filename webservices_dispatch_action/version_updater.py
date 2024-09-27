@@ -25,6 +25,9 @@ LOGGER = logging.getLogger(__name__)
 def update_version(
     git_repo, repo_name, input_version=None
 ) -> tuple[bool, bool, str | None]:
+    """
+    Returns [whether version changed, errors occurred, new version found]
+    """
     name = os.path.basename(repo_name).rsplit("-", 1)[0]
     LOGGER.info("using feedstock name %s for repo %s", name, repo_name)
 
@@ -124,7 +127,12 @@ def update_version(
     return True, False, new_version
 
 
-def update_pr_title(repo_name: str, pr_number: int, found_version: str) -> bool:
+def update_pr_title(
+    repo_name: str, pr_number: int, found_version: str
+) -> tuple[bool, bool]:
+    """
+    Returns [whether title changed, errored]
+    """
     try:
         gh = github.Github(os.environ["GH_TOKEN"])
         repo = gh.get_repo(repo_name)
@@ -135,18 +143,19 @@ def update_pr_title(repo_name: str, pr_number: int, found_version: str) -> bool:
             repo_name,
             pr_number,
         )
-        return False
+        return False, True
     if pr.title == "ENH: update package version":  # user didn't change the default
         try:
             pr.edit(title=f"{pr.title} to {found_version}")
+            return True, False
         except Exception:
             LOGGER.exception(
                 "error while trying to change PR title for %s#%s",
                 repo_name,
                 pr_number,
             )
-            return False
-    return True
+            return False, True
+    return False, False
 
 
 @click.command()
@@ -193,11 +202,13 @@ def main(
     if version_error:
         sys.exit(1)
 
-    if input_version is None and found_version and pr_number is not None:
+    if input_version is None and pr_number is not None and found_version:
         # We had to find the latest versions ourselves, so now we should
         # update the generic PR title to refelect the found version
-        ok = update_pr_title(repo_name, pr_number, found_version)
-        if not ok:
+        _, title_error = update_pr_title(
+            repo_name, pr_number, found_version
+        )
+        if title_error:
             sys.exit(1)
 
     sys.exit(0)
