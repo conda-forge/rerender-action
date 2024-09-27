@@ -165,7 +165,7 @@ def main():
                     input_version,
                 )
                 version_changed, version_error, found_version = update_version(
-                    feedstock_dir, repo_name, input_version=input_version
+                    git_repo, repo_name, input_version=input_version
                 )
 
                 version_push_error = comment_and_push_if_changed(
