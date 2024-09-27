@@ -4,7 +4,6 @@ import pprint
 import subprocess
 
 import conda_forge_tick.update_recipe
-import github
 from conda.models.version import VersionOrder
 from conda_forge_tick.feedstock_parser import load_feedstock
 from conda_forge_tick.update_recipe.version import update_version_feedstock_dir
@@ -13,6 +12,9 @@ from conda_forge_tick.update_upstream_versions import (
     get_latest_version,
 )
 from conda_forge_tick.utils import setup_logging
+from github import Github
+
+from . import sensitive_env
 
 setup_logging()
 
@@ -131,7 +133,8 @@ def update_pr_title(
     Returns [whether title changed, errored]
     """
     try:
-        gh = github.Github(os.environ["GH_TOKEN"])
+        with sensitive_env():
+            gh = Github(os.environ["GH_TOKEN"])
         repo = gh.get_repo(repo_name)
         pr = repo.get_pull(pr_number)
     except Exception:
