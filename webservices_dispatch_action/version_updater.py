@@ -2,9 +2,7 @@ import logging
 import os
 import pprint
 import subprocess
-import sys
 
-import click
 import conda_forge_tick.update_recipe
 import github
 from conda.models.version import VersionOrder
@@ -15,7 +13,6 @@ from conda_forge_tick.update_upstream_versions import (
     get_latest_version,
 )
 from conda_forge_tick.utils import setup_logging
-from git import Repo
 
 setup_logging()
 
@@ -156,57 +153,3 @@ def update_pr_title(
             )
             return False, True
     return False, False
-
-
-@click.command()
-@click.option(
-    "--feedstock-dir",
-    required=True,
-    type=str,
-    help="The directory of the feedstock",
-)
-@click.option(
-    "--repo-name",
-    required=True,
-    type=str,
-    help="The name of the repository (as '<owner>/<name>')",
-)
-@click.option(
-    "--input-version",
-    required=False,
-    type=str,
-    default=None,
-    help="The version to update to",
-)
-@click.option(
-    "--pr-number",
-    required=False,
-    type=int,
-    default=None,
-    help="PR number. Needed for PR title updates.",
-)
-def main(
-    feedstock_dir,
-    repo_name,
-    input_version=None,
-    pr_number=None,
-):
-    git_repo = Repo(feedstock_dir)
-
-    _, version_error, found_version = update_version(
-        git_repo,
-        repo_name,
-        input_version=input_version,
-    )
-
-    if version_error:
-        sys.exit(1)
-
-    if input_version is None and pr_number is not None and found_version:
-        # We had to find the latest versions ourselves, so now we should
-        # update the generic PR title to refelect the found version
-        _, title_error = update_pr_title(repo_name, pr_number, found_version)
-        if title_error:
-            sys.exit(1)
-
-    sys.exit(0)
