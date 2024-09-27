@@ -166,7 +166,7 @@ def main():
                     "--repo-name",
                     repo_name,
                     "--pr-number",
-                    pr_num,
+                    str(pr_num),
                 ]
                 if input_version:
                     cmd += ["--input-version", input_version]
