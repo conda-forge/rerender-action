@@ -10,17 +10,10 @@ import github
 from conda.models.version import VersionOrder
 from conda_forge_tick.feedstock_parser import load_feedstock
 from conda_forge_tick.update_recipe.version import update_version_feedstock_dir
-from conda_forge_tick.update_sources import (
-    CRAN,
-    NPM,
-    NVIDIA,
-    Github,
-    IncrementAlphaRawURL,
-    PyPI,
-    RawURL,
-    ROSDistro,
+from conda_forge_tick.update_upstream_versions import (
+    all_version_sources,
+    get_latest_version,
 )
-from conda_forge_tick.update_upstream_versions import get_latest_version
 from conda_forge_tick.utils import setup_logging
 from git import Repo
 
@@ -49,16 +42,7 @@ def update_version(
             new_version = get_latest_version(
                 name,
                 attrs,
-                (
-                    PyPI(),
-                    CRAN(),
-                    NPM(),
-                    ROSDistro(),
-                    RawURL(),
-                    Github(),
-                    IncrementAlphaRawURL(),
-                    NVIDIA(),
-                ),
+                all_version_sources(),
                 use_container=True,
             )
             new_version = new_version["new_version"]
