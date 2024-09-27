@@ -12,9 +12,9 @@ from conda_forge_tick.update_upstream_versions import (
     get_latest_version,
 )
 from conda_forge_tick.utils import setup_logging
-from github import Github
 
 from . import sensitive_env
+from .api_sessions import create_api_sessions
 
 setup_logging()
 
@@ -134,7 +134,7 @@ def update_pr_title(
     """
     try:
         with sensitive_env():
-            gh = Github(os.environ["GH_TOKEN"])
+            _, gh = create_api_sessions(os.environ["INPUT_GITHUB_TOKEN"])
         repo = gh.get_repo(repo_name)
         pr = repo.get_pull(pr_number)
     except Exception:
