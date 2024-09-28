@@ -51,7 +51,7 @@ def _pull_docker_image():
 
 
 def main():
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, flush=True)
 
     LOGGER.info("making API clients")
 
@@ -65,9 +65,6 @@ def main():
     print("::group::github event", flush=True)
     LOGGER.info("github event: %s", event_name)
     LOGGER.info("github event data:\n%s\n", pprint.pformat(event_data))
-    LOGGER.info("end of github event data")
-    sys.stderr.flush()
-    sys.stdout.flush()
     print("::endgroup::", flush=True)
 
     if event_name in ["repository_dispatch"]:
