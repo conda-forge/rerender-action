@@ -45,6 +45,58 @@ BRANCH = "version-update-live-test"
 PR_NUM = 483
 
 
+def _set_pr_draft():
+    gh = Github(os.environ["GH_TOKEN"])
+    repo = gh.get_repo(REPO)
+    pr = repo.get_pull(PR_NUM)
+
+    # based on this post: https://github.com/orgs/community/discussions/70061
+    mutation = (
+        """
+        mutation {
+            convertPullRequestToDraft(input:{pullRequestId: %s}) {
+                pullRequest{id, isDraft}
+            }
+        }
+    """
+        % pr.node_id
+    )
+
+    headers = {"Authorization": f"token {os.environ['GH_TOKEN']}"}
+    req = requests.post(
+        "https://api.github.com/graphql",
+        json={"query": mutation},
+        headers=headers,
+    )
+    req.raise_for_status()
+
+
+def _set_pr_not_draft():
+    # based on this post: https://github.com/orgs/community/discussions/70061
+    gh = Github(os.environ["GH_TOKEN"])
+    repo = gh.get_repo(REPO)
+    pr = repo.get_pull(PR_NUM)
+
+    mutation = (
+        """
+        mutation {
+            markPullRequestReadyForReview(input:{pullRequestId: %s}) {
+                pullRequest{id, isDraft}
+            }
+        }
+    """
+        % pr.node_id
+    )
+
+    headers = {"Authorization": f"token {os.environ['GH_TOKEN']}"}
+    req = requests.post(
+        "https://api.github.com/graphql",
+        json={"query": mutation},
+        headers=headers,
+    )
+    req.raise_for_status()
+
+
 def _change_version(new_version="0.13", branch="main"):
     import random
 
@@ -157,6 +209,12 @@ def _run_test(version):
     else:
         assert "ENH: update package version to " in _pr_title()
 
+    gh = Github(os.environ["GH_TOKEN"])
+    repo = gh.get_repo(REPO)
+    pr = repo.get_pull(PR_NUM)
+
+    assert not pr.draft
+
     print("tests passed!", flush=True)
 
 
@@ -207,6 +265,7 @@ with tempfile.TemporaryDirectory() as tmpdir:
                 _merge_main_to_branch(BRANCH, verbose=True)
                 _change_version(new_version="0.13", branch=BRANCH)
                 original_title = _pr_title(new="ENH: update package version")
+                _set_pr_draft()
                 _run_test(args.version)
             finally:
                 _change_action_branch("main", verbose=True)
@@ -214,3 +273,4 @@ with tempfile.TemporaryDirectory() as tmpdir:
                 _merge_main_to_branch(BRANCH, verbose=True)
                 _change_version(new_version="0.13", branch=BRANCH)
                 _pr_title(new=original_title)
+                _set_pr_not_draft()
