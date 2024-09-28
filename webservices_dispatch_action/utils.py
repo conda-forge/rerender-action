@@ -1,6 +1,7 @@
 import logging
 import os
 
+import requests
 from git import GitCommandError
 
 from .api_sessions import get_actor_token
@@ -126,3 +127,31 @@ Hi! This is the friendly automated conda-forge-webservice.
         pull.edit(state="closed")
 
     return push_error
+
+
+def mark_pr_as_ready_for_review(pr):
+    # based on this post: https://github.com/orgs/community/discussions/70061
+    if not pr.draft:
+        return True
+
+    mutation = (
+        """
+        mutation {
+            markPullRequestReadyForReview(input:{pullRequestId: %s}) {
+                pullRequest{id, isDraft}
+            }
+        }
+    """
+        % pr.node_id
+    )
+
+    headers = {"Authorization": f"token {get_actor_token()[1]}"}
+    req = requests.post(
+        "https://api.github.com/graphql",
+        json={"query": mutation},
+        headers=headers,
+    )
+    if req.status_code == 200:
+        return True
+    else:
+        return False
