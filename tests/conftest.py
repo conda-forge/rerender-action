@@ -39,7 +39,7 @@ def _change_action_branch(branch, verbose=False):
         branch,
         "rerendering_github_token: ${{ secrets.RERENDERING_GITHUB_TOKEN }}",
         "ssh_private_key: ${{ secrets.CONDA_FORGE_WRITE_SSH_DEPLOY_KEY }}"
-        if branch == "main"
+        if branch != "main"
         else "",
     )
 
