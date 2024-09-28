@@ -77,6 +77,9 @@ def _set_pr_not_draft():
     repo = gh.get_repo(REPO)
     pr = repo.get_pull(PR_NUM)
 
+    if not pr.draft:
+        return
+
     mutation = (
         """
         mutation {
