@@ -50,6 +50,9 @@ def _set_pr_draft():
     repo = gh.get_repo(REPO)
     pr = repo.get_pull(PR_NUM)
 
+    if pr.draft:
+        return
+
     # based on this post: https://github.com/orgs/community/discussions/70061
     mutation = (
         """
