@@ -36,6 +36,7 @@ runs:
     - name: install code
       shell: bash -leo pipefail {0}
       run: |
+        # install code
         echo "::group::install code"
         pushd ${{ github.action_path }}
         pip install --no-build-isolation --no-deps -e .
@@ -47,6 +48,7 @@ runs:
     - name: run
       shell: bash -leo pipefail {0}
       run: |
+        # run code
         if [[ "${GHA_REF}" == "main" ]]; then
           export CF_FEEDSTOCK_OPS_CONTAINER_TAG="prod"
         else
