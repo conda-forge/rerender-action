@@ -57,7 +57,7 @@ def _set_pr_draft():
     mutation = (
         """
         mutation {
-            convertPullRequestToDraft(input:{pullRequestId: %s}) {
+            convertPullRequestToDraft(input:{pullRequestId: "%s"}) {
                 pullRequest{id, isDraft}
             }
         }
@@ -71,7 +71,8 @@ def _set_pr_draft():
         json={"query": mutation},
         headers=headers,
     )
-    req.raise_for_status()
+    if "errors" in req.json():
+        raise ValueError(req.json()["errors"])
 
 
 def _set_pr_not_draft():
@@ -86,7 +87,7 @@ def _set_pr_not_draft():
     mutation = (
         """
         mutation {
-            markPullRequestReadyForReview(input:{pullRequestId: %s}) {
+            markPullRequestReadyForReview(input:{pullRequestId: "%s"}) {
                 pullRequest{id, isDraft}
             }
         }
@@ -100,7 +101,8 @@ def _set_pr_not_draft():
         json={"query": mutation},
         headers=headers,
     )
-    req.raise_for_status()
+    if "errors" in req.json():
+        raise ValueError(req.json()["errors"])
 
 
 def _change_version(new_version="0.13", branch="main"):

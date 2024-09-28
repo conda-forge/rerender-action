@@ -137,7 +137,7 @@ def mark_pr_as_ready_for_review(pr):
     mutation = (
         """
         mutation {
-            markPullRequestReadyForReview(input:{pullRequestId: %s}) {
+            markPullRequestReadyForReview(input:{pullRequestId: "%s"}) {
                 pullRequest{id, isDraft}
             }
         }
@@ -151,7 +151,8 @@ def mark_pr_as_ready_for_review(pr):
         json={"query": mutation},
         headers=headers,
     )
-    if req.status_code == 200:
-        return True
-    else:
+    if "errors" in req.json():
+        LOGGER.error(req.json()["errors"])
         return False
+    else:
+        return True
