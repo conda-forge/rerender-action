@@ -26,6 +26,7 @@ from webservices_dispatch_action.rerendering import (
 )
 from webservices_dispatch_action.utils import (
     comment_and_push_if_changed,
+    flush_logger,
     get_gha_run_link,
     mark_pr_as_ready_for_review,
 )
@@ -51,7 +52,7 @@ def _pull_docker_image():
 
 
 def main():
-    logging.basicConfig(level=logging.INFO, flush=True)
+    logging.basicConfig(level=logging.INFO)
 
     LOGGER.info("making API clients")
 
@@ -65,6 +66,7 @@ def main():
     print("::group::github event", flush=True)
     LOGGER.info("github event: %s", event_name)
     LOGGER.info("github event data:\n%s\n", pprint.pformat(event_data))
+    flush_logger(LOGGER)
     print("::endgroup::", flush=True)
 
     if event_name in ["repository_dispatch"]:

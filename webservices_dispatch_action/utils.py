@@ -1,5 +1,6 @@
 import logging
 import os
+import sys
 
 import requests
 from git import GitCommandError
@@ -168,3 +169,13 @@ def mark_pr_as_ready_for_review(pr):
         return False
     else:
         return True
+
+
+def flush_logger(logger):
+    for handler in logger.handlers:
+        try:
+            handler.flush()
+        except Exception:
+            pass
+    sys.stdout.flush()
+    sys.stderr.flush()
