@@ -65,7 +65,7 @@ def _set_pr_draft():
         % pr.node_id
     )
 
-    headers = {"Authorization": f"token {os.environ['GH_TOKEN']}"}
+    headers = {"Authorization": f"bearer {os.environ['GH_TOKEN']}"}
     req = requests.post(
         "https://api.github.com/graphql",
         json={"query": mutation},
@@ -94,7 +94,7 @@ def _set_pr_not_draft():
         % pr.node_id
     )
 
-    headers = {"Authorization": f"token {os.environ['GH_TOKEN']}"}
+    headers = {"Authorization": f"bearer {os.environ['GH_TOKEN']}"}
     req = requests.post(
         "https://api.github.com/graphql",
         json={"query": mutation},

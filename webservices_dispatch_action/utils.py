@@ -145,7 +145,7 @@ def mark_pr_as_ready_for_review(pr):
         % pr.node_id
     )
 
-    headers = {"Authorization": f"token {get_actor_token()[1]}"}
+    headers = {"Authorization": f"bearer {get_actor_token()[1]}"}
     req = requests.post(
         "https://api.github.com/graphql",
         json={"query": mutation},
