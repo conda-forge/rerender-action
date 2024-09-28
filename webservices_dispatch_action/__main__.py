@@ -23,7 +23,10 @@ from webservices_dispatch_action.linter import (
 from webservices_dispatch_action.rerendering import (
     rerender,
 )
-from webservices_dispatch_action.utils import comment_and_push_if_changed
+from webservices_dispatch_action.utils import (
+    comment_and_push_if_changed,
+    mark_pr_as_ready_for_review,
+)
 from webservices_dispatch_action.version_updater import update_pr_title, update_version
 
 LOGGER = logging.getLogger(__name__)
@@ -125,6 +128,10 @@ def main():
                             rerender_error,
                         ),
                     )
+                # if the pr was made by the bot, mark it as ready for review
+                if pr.title == "MNT: rerender" and pr.user.login == "conda-forge-admin":
+                    mark_pr_as_ready_for_review(pr)
+
         elif event_data["action"] == "version_update":
             pr_num = int(event_data["client_payload"]["pr"])
             repo_name = event_data["repository"]["full_name"]
@@ -233,6 +240,9 @@ def main():
                             found_version,
                         )
                         update_pr_title(repo_name, pr_num, found_version)
+
+                    # these PRs always get marked as ready for review
+                    mark_pr_as_ready_for_review(pr)
 
         elif event_data["action"] == "lint":
             pr_num = int(event_data["client_payload"]["pr"])
