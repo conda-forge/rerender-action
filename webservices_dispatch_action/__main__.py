@@ -65,7 +65,9 @@ def main():
 
     print("::group::github event", flush=True)
     LOGGER.info("github event: %s", event_name)
-    LOGGER.info("github event data:", )
+    LOGGER.info(
+        "github event data:",
+    )
     flush_logger(LOGGER)
     print(pprint.pformat(event_data), flush=True)
     flush_logger(LOGGER)

@@ -97,8 +97,7 @@ def _run_test():
                 with open(".github/workflows/automerge.yml", "r") as fp:
                     lines = fp.readlines()
                 assert not any(
-                    line.startswith("# test line for rerender edits")
-                    for line in lines
+                    line.startswith("# test line for rerender edits") for line in lines
                 )
 
     print("tests passed!")
