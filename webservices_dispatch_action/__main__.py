@@ -24,6 +24,7 @@ from webservices_dispatch_action.rerendering import (
     rerender,
 )
 from webservices_dispatch_action.utils import comment_and_push_if_changed
+from webservices_dispatch_action.version_updater import update_pr_title, update_version
 
 LOGGER = logging.getLogger(__name__)
 
@@ -158,30 +159,14 @@ def main():
 
                 # update version
                 _pull_docker_image()
-                curr_head = git_repo.active_branch.commit
-                cmd = [
-                    "run-webservices-dispatch-action-version-updater",
-                    "--feedstock-dir",
-                    feedstock_dir,
-                    "--repo-name",
+                LOGGER.info(
+                    "Running version update for %s with input_version %s",
                     repo_name,
-                ]
-                if input_version:
-                    cmd += ["--input-version", input_version]
-                LOGGER.info(f"Running command {' '.join(cmd)}")
-                ret = subprocess.run(
-                    cmd,
-                    env=os.environ,
+                    input_version,
                 )
-                if ret.returncode != 0:
-                    version_error = True
-                    version_changed = False
-                elif git_repo.active_branch.commit == curr_head:
-                    version_error = False
-                    version_changed = False
-                else:
-                    version_error = False
-                    version_changed = True
+                version_changed, version_error, found_version = update_version(
+                    git_repo, repo_name, input_version=input_version
+                )
 
                 version_push_error = comment_and_push_if_changed(
                     action="update the version",
@@ -240,6 +225,15 @@ def main():
                                 rerender_error,
                             ),
                         )
+                    if found_version:
+                        LOGGER.info(
+                            "Updating PR title for %s#%s with version=%s",
+                            repo_name,
+                            pr_num,
+                            found_version,
+                        )
+                        update_pr_title(repo_name, pr_num, found_version)
+
         elif event_data["action"] == "lint":
             pr_num = int(event_data["client_payload"]["pr"])
             repo_name = event_data["repository"]["full_name"]

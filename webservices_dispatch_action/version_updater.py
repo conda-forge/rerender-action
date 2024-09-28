@@ -2,33 +2,31 @@ import logging
 import os
 import pprint
 import subprocess
-import sys
 
-import click
 import conda_forge_tick.update_recipe
 from conda.models.version import VersionOrder
 from conda_forge_tick.feedstock_parser import load_feedstock
 from conda_forge_tick.update_recipe.version import update_version_feedstock_dir
-from conda_forge_tick.update_sources import (
-    CRAN,
-    NPM,
-    NVIDIA,
-    Github,
-    IncrementAlphaRawURL,
-    PyPI,
-    RawURL,
-    ROSDistro,
+from conda_forge_tick.update_upstream_versions import (
+    all_version_sources,
+    get_latest_version,
 )
-from conda_forge_tick.update_upstream_versions import get_latest_version
 from conda_forge_tick.utils import setup_logging
-from git import Repo
+
+from . import sensitive_env
+from .api_sessions import create_api_sessions
 
 setup_logging()
 
 LOGGER = logging.getLogger(__name__)
 
 
-def update_version(git_repo, repo_name, input_version=None):
+def update_version(
+    git_repo, repo_name, input_version=None
+) -> tuple[bool, bool, str | None]:
+    """
+    Returns [whether version changed, errors occurred, new version found]
+    """
     name = os.path.basename(repo_name).rsplit("-", 1)[0]
     LOGGER.info("using feedstock name %s for repo %s", name, repo_name)
 
@@ -38,7 +36,7 @@ def update_version(git_repo, repo_name, input_version=None):
         LOGGER.info("feedstock attrs:\n%s\n", pprint.pformat(attrs))
     except Exception:
         LOGGER.exception("error while computing feedstock attributes!")
-        return False, True
+        return False, True, None
 
     if input_version is None or input_version == "null":
         try:
@@ -46,16 +44,7 @@ def update_version(git_repo, repo_name, input_version=None):
             new_version = get_latest_version(
                 name,
                 attrs,
-                (
-                    PyPI(),
-                    CRAN(),
-                    NPM(),
-                    ROSDistro(),
-                    RawURL(),
-                    Github(),
-                    IncrementAlphaRawURL(),
-                    NVIDIA(),
-                ),
+                all_version_sources(),
                 use_container=True,
             )
             new_version = new_version["new_version"]
@@ -69,7 +58,7 @@ def update_version(git_repo, repo_name, input_version=None):
                 raise RuntimeError("Could not fetch latest version!")
         except Exception:
             LOGGER.exception("error while getting feedstock version!")
-            return False, True
+            return False, True, None
     else:
         LOGGER.info("using input version")
         new_version = input_version
@@ -87,7 +76,7 @@ def update_version(git_repo, repo_name, input_version=None):
         LOGGER.info(
             "not updating since new version is less or equal to current version"
         )
-        return False, False
+        return False, False, new_version
 
     try:
         updated, errors = update_version_feedstock_dir(
@@ -111,7 +100,7 @@ def update_version(git_repo, repo_name, input_version=None):
             fp.write(new_meta_yaml)
     except Exception:
         LOGGER.exception("error while updating the recipe!")
-        return False, True
+        return False, True, new_version
 
     try:
         with open(os.path.join(git_repo.working_dir, "recipe", "meta.yaml"), "w") as fp:
@@ -132,45 +121,38 @@ def update_version(git_repo, repo_name, input_version=None):
         )
     except Exception:
         LOGGER.exception("error while committing new recipe to repo")
+        return False, True, new_version
+
+    return True, False, new_version
+
+
+def update_pr_title(
+    repo_name: str, pr_number: int, found_version: str
+) -> tuple[bool, bool]:
+    """
+    Returns [whether title changed, errored]
+    """
+    try:
+        with sensitive_env():
+            _, gh = create_api_sessions(os.environ["INPUT_GITHUB_TOKEN"])
+        repo = gh.get_repo(repo_name)
+        pr = repo.get_pull(pr_number)
+    except Exception:
+        LOGGER.exception(
+            "error while trying to get PR title for %s#%s",
+            repo_name,
+            pr_number,
+        )
         return False, True
-
-    return True, False
-
-
-@click.command()
-@click.option(
-    "--feedstock-dir",
-    required=True,
-    type=str,
-    help="The directory of the feedstock",
-)
-@click.option(
-    "--repo-name",
-    required=True,
-    type=str,
-    help="The name of the repository",
-)
-@click.option(
-    "--input-version",
-    required=False,
-    type=str,
-    default=None,
-    help="The version to update to",
-)
-def main(
-    feedstock_dir,
-    repo_name,
-    input_version=None,
-):
-    git_repo = Repo(feedstock_dir)
-
-    _, version_error = update_version(
-        git_repo,
-        repo_name,
-        input_version=input_version,
-    )
-
-    if version_error:
-        sys.exit(1)
-    else:
-        sys.exit(0)
+    if pr.title == "ENH: update package version":  # user didn't change the default
+        try:
+            pr.edit(title=f"{pr.title} to {found_version}")
+            return True, False
+        except Exception:
+            LOGGER.exception(
+                "error while trying to change PR title for %s#%s",
+                repo_name,
+                pr_number,
+            )
+            return False, True
+    return False, False

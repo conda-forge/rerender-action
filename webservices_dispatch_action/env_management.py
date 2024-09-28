@@ -36,5 +36,7 @@ class SensitiveEnv:
         remove keys and update the sensitive env in case any were updated
         inside the ctx"""
         self.reveal_env_vars()
-        yield os.environ
-        self.hide_env_vars()
+        try:
+            yield os.environ
+        finally:
+            self.hide_env_vars()

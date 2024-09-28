@@ -12,7 +12,6 @@ packages = ["webservices_dispatch_action"]
 
 [project.scripts]
 run-webservices-dispatch-action = "webservices_dispatch_action.__main__:main"
-run-webservices-dispatch-action-version-updater = "webservices_dispatch_action.version_updater:main"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "W"]

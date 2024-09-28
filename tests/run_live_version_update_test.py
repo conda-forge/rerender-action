@@ -36,7 +36,11 @@ import time
 
 import requests
 from conftest import _change_action_branch, _merge_main_to_branch, pushd
+from github import Github
 
+REPO_OWNER = "conda-forge"
+REPO_NAME = "cf-autotick-bot-test-package-feedstock"
+REPO = f"{REPO_OWNER}/{REPO_NAME}"
 BRANCH = "version-update-live-test"
 PR_NUM = 483
 
@@ -78,6 +82,16 @@ def _change_version(new_version="0.13", branch="main"):
     subprocess.run(["git", "push"], check=True)
 
 
+def _pr_title(new=None):
+    gh = Github(os.environ["GH_TOKEN"])
+    repo = gh.get_repo(REPO)
+    pr = repo.get_pull(PR_NUM)
+    old = pr.title
+    if new:
+        pr.edit(title=new)
+    return old
+
+
 def _run_test(version):
     print(
         "sending repo dispatch event to update "
@@ -89,10 +103,7 @@ def _run_test(version):
         "content-type": "application/json",
     }
     r = requests.post(
-        (
-            "https://api.github.com/repos/conda-forge/"
-            "cf-autotick-bot-test-package-feedstock/dispatches"
-        ),
+        (f"https://api.github.com/repos/{REPO}/dispatches"),
         data=json.dumps(
             {
                 "event_type": "version_update",
@@ -119,12 +130,12 @@ def _run_test(version):
                 [
                     "git",
                     "clone",
-                    "https://github.com/conda-forge/cf-autotick-bot-test-package-feedstock.git",
+                    f"https://github.com/{REPO}.git",
                 ],
                 check=True,
             )
 
-            with pushd("cf-autotick-bot-test-package-feedstock"):
+            with pushd(REPO_NAME):
                 print("checkout branch...", flush=True)
                 subprocess.run(
                     ["git", "checkout", BRANCH],
@@ -140,6 +151,11 @@ def _run_test(version):
                 output = c.stdout.decode("utf-8")
                 print("    last commit:", output.strip(), flush=True)
                 assert "MNT:" in output or "ENH " in output
+
+    if version:
+        assert _pr_title() == f"ENH: update package version to {version}"
+    else:
+        assert "ENH: update package version to " in _pr_title()
 
     print("tests passed!", flush=True)
 
@@ -179,20 +195,22 @@ with tempfile.TemporaryDirectory() as tmpdir:
             [
                 "git",
                 "clone",
-                f"https://x-access-token:{os.environ['GH_TOKEN']}@github.com/conda-forge/cf-autotick-bot-test-package-feedstock.git",
+                f"https://x-access-token:{os.environ['GH_TOKEN']}@github.com/{REPO}.git",
             ],
             check=True,
         )
 
-        with pushd("cf-autotick-bot-test-package-feedstock"):
+        with pushd(REPO_NAME):
             try:
                 _change_action_branch(args.branch, verbose=True)
                 _change_version(new_version="0.13", branch="main")
                 _merge_main_to_branch(BRANCH, verbose=True)
                 _change_version(new_version="0.13", branch=BRANCH)
+                original_title = _pr_title(new="ENH: update package version")
                 _run_test(args.version)
             finally:
                 _change_action_branch("main", verbose=True)
                 _change_version(new_version="0.14", branch="main")
                 _merge_main_to_branch(BRANCH, verbose=True)
                 _change_version(new_version="0.13", branch=BRANCH)
+                _pr_title(new=original_title)
