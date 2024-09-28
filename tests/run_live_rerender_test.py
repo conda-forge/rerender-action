@@ -83,7 +83,7 @@ def _run_test():
                     check=True,
                 )
 
-                print("checking the git history")
+                print("checking the git history...")
                 c = subprocess.run(
                     ["git", "log", "--pretty=oneline", "-n", "1"],
                     capture_output=True,
@@ -92,6 +92,13 @@ def _run_test():
                 output = c.stdout.decode("utf-8")
                 print("    last commit:", output.strip())
                 assert "MNT:" in output
+
+                print("checking rerender undid workflow edits...")
+                with open(".github/workflows/automerge.yml", "r") as fp:
+                    lines = fp.readlines()
+                assert not any(
+                    line.startswith("# test line for rerender edits") for line in lines
+                )
 
     print("tests passed!")
 
@@ -152,7 +159,7 @@ with tempfile.TemporaryDirectory() as tmpdir:
 
                     print("making an edit to a workflow...")
                     with open(".github/workflows/automerge.yml", "a") as fp:
-                        fp.write(" \n")
+                        fp.write("# test line for rerender edits\n")
                     subprocess.run(
                         ["git", "add", "-f", ".github/workflows/automerge.yml"],
                         check=True,
@@ -194,12 +201,14 @@ with tempfile.TemporaryDirectory() as tmpdir:
                 with open(".github/workflows/automerge.yml", "r") as fp:
                     lines = fp.readlines()
 
-                for i in range(2):
-                    if len(lines[-1].strip()) == 0:
-                        lines = lines[:-1]
+                lines = [
+                    line.strip()
+                    for line in lines
+                    if not line.startswith("# test line for rerender edits")
+                ]
 
                 with open(".github/workflows/automerge.yml", "w") as fp:
-                    fp.write("".join(lines))
+                    fp.write("\n".join(lines))
 
                 subprocess.run(
                     ["git", "add", "-f", ".github/workflows/automerge.yml"],
@@ -213,7 +222,7 @@ with tempfile.TemporaryDirectory() as tmpdir:
                         "commit",
                         "--allow-empty",
                         "-m",
-                        "[ci skip] undo workflow changes",
+                        "[ci skip] undo workflow changes if any",
                     ],
                     check=True,
                 )

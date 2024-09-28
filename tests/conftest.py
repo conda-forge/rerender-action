@@ -38,6 +38,9 @@ def _change_action_branch(branch, verbose=False):
     data = (
         branch,
         "rerendering_github_token: ${{ secrets.RERENDERING_GITHUB_TOKEN }}",
+        "ssh_private_key: ${{ secrets.CONDA_SMITHY_SSH_DEPLOY_KEY }}"
+        if branch != "main"
+        else "",
     )
 
     with open(".github/workflows/webservices.yml", "w") as fp:
@@ -55,6 +58,7 @@ jobs:
         uses: conda-forge/webservices-dispatch-action@%s
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          %s
           %s
 """
             % data
