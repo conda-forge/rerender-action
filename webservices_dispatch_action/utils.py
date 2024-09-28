@@ -174,8 +174,11 @@ def mark_pr_as_ready_for_review(pr):
 def flush_logger(logger):
     for handler in logger.handlers:
         try:
-            handler.flush()
+            # bypass locks for threading
+            handler.stream.flush()
         except Exception:
             pass
     sys.stdout.flush()
     sys.stderr.flush()
+    sys.__stderr__.flush()
+    sys.__stdout__.flush()
