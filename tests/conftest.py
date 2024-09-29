@@ -5,6 +5,10 @@ import tempfile
 
 import pytest
 
+# Turn this to true to test w/ deploy keys
+# you need to make such a key and add it to the repo to do the test
+TEST_DEPLOY_KEY = False
+
 
 @contextlib.contextmanager
 def pushd(new_dir):
@@ -38,10 +42,15 @@ def _change_action_branch(branch, verbose=False):
     data = (
         branch,
         "rerendering_github_token: ${{ secrets.RERENDERING_GITHUB_TOKEN }}",
-        "ssh_private_key: ${{ secrets.CONDA_SMITHY_SSH_DEPLOY_KEY }}"
-        if branch != "main"
-        else "",
     )
+    if TEST_DEPLOY_KEY:
+        data += (
+            "ssh_private_key: ${{ secrets.CONDA_SMITHY_SSH_DEPLOY_KEY }}"
+            if branch != "main"
+            else "",
+        )
+    else:
+        data += ("",)
 
     with open(".github/workflows/webservices.yml", "w") as fp:
         fp.write(

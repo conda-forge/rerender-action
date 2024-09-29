@@ -36,7 +36,12 @@ import tempfile
 import time
 
 import requests
-from conftest import _change_action_branch, _merge_main_to_branch, pushd
+from conftest import (
+    TEST_DEPLOY_KEY,
+    _change_action_branch,
+    _merge_main_to_branch,
+    pushd,
+)
 
 
 def _run_test():
@@ -93,12 +98,14 @@ def _run_test():
                 print("    last commit:", output.strip())
                 assert "MNT:" in output
 
-                print("checking rerender undid workflow edits...")
-                with open(".github/workflows/automerge.yml", "r") as fp:
-                    lines = fp.readlines()
-                assert not any(
-                    line.startswith("# test line for rerender edits") for line in lines
-                )
+                if TEST_DEPLOY_KEY:
+                    print("checking rerender undid workflow edits...")
+                    with open(".github/workflows/automerge.yml", "r") as fp:
+                        lines = fp.readlines()
+                    assert not any(
+                        line.startswith("# test line for rerender edits")
+                        for line in lines
+                    )
 
     print("tests passed!")
 
