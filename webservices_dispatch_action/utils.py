@@ -80,8 +80,8 @@ def comment_and_push_if_changed(
 Hi! This is the friendly automated conda-forge-webservice.
 
 I tried to {} for you, but it looks like I wasn't \
-able to push to the {} \
-branch of {}/{}. Did you check the "Allow edits from maintainers" box?
+able to push to the `{}` \
+branch of `{}`/`{}`. Did you check the "Allow edits from maintainers" box?
 
 **NOTE**: Our webservices cannot push to PRs from organization accounts \
 or PRs from forks made from \
@@ -104,9 +104,8 @@ into your personal GitHub account.
 Hi! This is the friendly automated conda-forge-webservice.
 
 I tried to {} for you but ran into some issues. \
-Please check the output \
-logs of the latest webservices GitHub actions workflow run for errors. You can \
-also ping conda-forge/core for further assistance{}.
+Please check the output logs of the GitHub actions workflow below for more details. \
+You can also ping conda-forge/core for further assistance{}.
 """.format(action, help_message)
         else:
             message = """\
