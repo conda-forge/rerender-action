@@ -14,18 +14,18 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+        uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
 
       - name: generate token
         id: generate_token
-        uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4
+        uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69
         with:
           app-id: ${{ secrets.CF_CURATOR_APP_ID }}
           private-key: ${{ secrets.CF_CURATOR_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
 
       - name: relock
-        uses: conda-incubator/relock-conda@b26a0ac9faa43f7ff7e78631bf48f643e86cae9e
+        uses: conda-incubator/relock-conda@28824ad154fc0be9d78891ad896f4ab085eb3f84
         with:
           github-token: ${{ steps.generate_token.outputs.token }}
           automerge: true
